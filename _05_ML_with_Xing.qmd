@@ -1,0 +1,519 @@
+---
+title: "Exploring Xing data"
+format: html
+---
+
+
+
+## Preliminaries
+
+### Libraries
+
+```{python}
+import pandas as pd
+import matplotlib.pyplot as plt
+from sklearn.metrics import silhouette_score
+
+# Though the following import is not directly being used, it is required
+# for 3D projection to work with matplotlib < 3.2
+import mpl_toolkits.mplot3d  # noqa: F401
+import numpy as np
+
+# ML libraries
+## PCA
+from sklearn import decomposition
+
+## k-means
+from sklearn.cluster import KMeans
+
+## TSNE
+from sklearn.manifold import TSNE
+
+
+## plotting
+import seaborn as sns
+```
+
+
+### Load data
+
+```{python}
+inds    = pd.read_csv("JHS_Ind.csv",index_col="UID")  
+genos4  = pd.read_csv("23am_Xing_012_coded_noNA_scaled.csv")
+#genos4b = pd.read_csv("23am_Xing_01_coded.csv")
+```
+
+
+TODO: move this to data cleaning file
+```{python}
+#genos4b = genos4b.dropna(axis = 1)
+```
+
+```{python}
+genos4  = genos4.rename(columns = {'Unnamed: 0': "UID"})
+#genos4b = genos4b.rename(columns = {'Unnamed: 0': "UID"})
+```
+
+```{python}
+genos4  = genos4.set_index("UID")
+#genos4b = genos4b.set_index("UID")
+```
+
+```{python}
+inds.shape[0] == genos4.shape[0]
+#inds.shape[0] == genos4b.shape[0]
+```
+
+
+
+Reconcile indexing order
+```{python}
+genos4 = genos4.reindex(inds.index)
+#genos4b = genos4b.reindex(inds.index)
+```
+
+```{python}
+genos4.head()
+#genos4b.head()
+```
+
+##
+
+```{python}
+genos4.head()
+```
+
+## Create data tables
+
+```{python}
+x = inds.merge(genos4b, on = "UID")
+```
+
+```{python}
+x = x.set_index(['Population',"Continental Group"], inplace=False)
+```
+
+```{python}
+x_stack = x.stack()
+```
+
+```{python}
+x_stack.index.names = ['Population',"Continent","SNP"]
+```
+
+```{python}
+x_stack = pd.DataFrame(x_stack)
+```
+
+```{python}
+x_stack = x_stack.rename(columns={x_stack.columns[0]: 'presabs'})
+```
+
+```{python}
+x_table = x_stack.pivot_table(index = "Continent",
+                columns= "SNP",
+                values = "presabs", aggfunc = "sum")
+```
+
+```{python}
+x_table01 = x_table.copy()
+
+cols = range(0,x_table.shape[1])
+
+for i in cols:
+    x_table01.iloc[:,i] = np.where(x_table.iloc[:,i] > 0,1,0)
+```
+
+```{python}
+y_only1_cont = x_table01.sum() == 1
+y_morethan1_cont = x_table01.sum() != 1
+x_only_1_cont = x_table01[y_only1_cont.index[y_only1_cont]]
+```
+
+
+
+```{python}
+x_only_1_cont.sum(axis  = 1)
+```
+```{python}
+x_table01.sum(axis = 1)
+```
+
+```{python}
+x_table01.shape
+```
+
+```{python}
+x.pivot_table(index = "Continental Group")
+```
+
+```{python}
+x.pivot_table(index = "Continental Group", 
+columns = x.columns[2:], aggfunc="sum")
+```
+
+```{python}
+inds_allele_sum = genos4b.T.sum()
+inds_allele_sum = pd.DataFrame(inds_allele_sum)
+inds_allele_sum = inds_allele_sum.reset_index()
+inds_allele_sum= inds_allele_sum.rename(columns={inds_allele_sum.columns[1]: 'total_alleles'})
+inds_allele_sum = inds_allele_sum.set_index("UID")
+```
+
+```{python}
+inds2 = inds.merge(inds_allele_sum, on = "UID")
+```
+
+```{python}
+inds2.pivot_table(index = "Continental Group",values = "total_alleles",aggfunc = "mean")
+```
+
+```{python}
+inds.head()
+genos4.index
+```
+
+```{python}
+inds.Population.value_counts()
+inds["Continental Group"].value_counts()
+```
+
+```{python}
+genos4.head()
+```
+
+```{python}
+inds.head()
+```
+
+
+
+## PCA - binary data
+
+```{python}
+X01 = genos4b[y_morethan1_cont.index[y_morethan1_cont]]
+y = inds.Population
+
+pca = decomposition.PCA(n_components=2)
+pca.fit(X01)
+X01 = pca.transform(X01)
+```
+
+```{python}
+plt.close()
+ax = sns.scatterplot(y = X01[:,1], x = X01[:,0],
+                hue = inds["Continental Group"])
+ax.set(ylim=(25, -25))
+ax
+```
+
+
+## Scatterplots - ha!
+
+```{python}
+plt.close()
+jit = 0.15
+genos_temp = genos4.iloc[:,0:2].copy()
+genos_temp.iloc[:,0] = genos_temp.iloc[:,0] + np.random.uniform(low=-1*jit, high=jit, size=genos_temp.shape[0])
+genos_temp.iloc[:,1] = genos_temp.iloc[:,1] + np.random.uniform(low=-1*jit, high=jit, size=genos_temp.shape[0])
+ax = sns.scatterplot(x = genos_temp.iloc[:,0], y = genos_temp.iloc[:,1],
+                hue = inds["Continental Group"]
+)
+sns.move_legend(ax, "upper left", bbox_to_anchor=(1, 1))
+```
+
+
+
+## PCA - numeric data
+
+```{python}
+X = genos4
+y = inds.Population
+
+pca = decomposition.PCA(n_components=10)
+pca.fit(X)
+X_transform = pca.transform(X)
+```
+
+
+Scree plot
+```{python}
+plt.close()
+PC_values = np.arange(pca.n_components_) + 1
+plt.plot(PC_values, pca.explained_variance_ratio_*100, 'ro-', linewidth=2)
+plt.title('Scree Plot')
+plt.xlabel('Principal Component')
+plt.ylabel('Percentage of Variance Explained')
+plt.show()
+```
+
+```{python}
+df_23am_Xing_subset2 = pd.read_csv("23am_Xing_subset_with_scaled_feat.csv")
+df_23am_Xing_subset2 = df_23am_Xing_subset2.set_index("rsid")
+```
+
+```{python}
+df_23am_Xing_subset2.head()
+```
+
+```{python}
+X_23am = pd.DataFrame(df_23am_Xing_subset2.scaled_value)
+```
+
+```{python}
+X_23am.head()
+```
+
+```{python}
+X_23am = X_23am.T[X.columns]
+```
+
+```{python}
+X_23am_transform = pca.transform(X_23am)
+```
+
+### PC 1 versus PC 2
+
+```{python}
+plt.close()
+pc01_var = round(pca.explained_variance_ratio_[0],2)*100
+x_label = f"PCA 1 \n({pc01_var}% of variance)"
+
+pc02_var = round(pca.explained_variance_ratio_[1],2)*100
+y_label = f"PCA 2 \n({pc02_var}% of variance)"
+
+pc03_var = round(pca.explained_variance_ratio_[2],2)*100
+
+ax = sns.scatterplot(y = X_transform[:,1], x = X_transform[:,0]*-1,
+                hue = inds["Continental Group"])
+ax.set(xlabel=x_label, ylabel=y_label)
+ax.set(ylim=(65, -40))
+ax.set(ylim=(50, -40))
+
+plt.scatter(y = X_23am_transform[0][1],
+                x = X_23am_transform[0][0]*-1, 
+                marker='x', 
+                linewidths = 5,edgecolors = "black",
+                s=200)
+```
+
+
+### tSNE
+
+```{python}
+X_embedded = TSNE(n_components=2, learning_rate='auto',
+                  init='random', perplexity=3).fit_transform(X)
+```
+
+```{python}
+plt.close()
+sns.scatterplot(y = X_embedded[:,1], x = X_embedded[:,0],
+                hue = inds["Continental Group"])
+
+```
+
+
+
+
+tsne.fit_transform(X)
+
+
+## PC2 vs. PC3
+
+```{python}
+plt.close()
+pc01_var = round(pca.explained_variance_ratio_[1],2)*100
+y_label = f"PCA 2 \n({pc02_var}% of variance)"
+
+pc02_var = round(pca.explained_variance_ratio_[2],2)*100
+x_label = f"PCA 3 \n({pc03_var}% of variance)"
+
+ax = sns.scatterplot(y = X_transform[:,1], x = X_transform[:,2],
+                hue = inds["Continental Group"])
+ax.set(xlabel=x_label, ylabel=y_label)
+ax.set(ylim=(65, -40))
+ax.set(ylim=(65, -40));
+
+
+
+
+```
+
+```{python}
+
+```
+
+
+
+
+
+# kmeans
+
+## kmeans 2 groups
+
+```{python}
+X = genos4_with_noise
+y = inds.Population
+K = 2
+kmeans_2 = KMeans(n_clusters=K, max_iter=1000).fit(X)
+preds_2 = kmeans_2.fit_predict(X)
+```
+
+```{python}
+plt.close()
+ax = sns.scatterplot(x = X_transform[:,0], y = X_transform[:,1],
+                hue = preds_2)
+ax.set(xlabel="PC 1", ylabel="PC 2")
+ax.set(ylim=(65, -40))
+ax.set(ylim=(65, -40));
+
+```
+
+## kmeans 3 groups
+
+```{python}
+X = genos4
+y = inds.Population
+K = 3
+kmeans_K3 = KMeans(n_clusters=K, max_iter=1000).fit(X)
+preds_3 = kmeans_K3.fit_predict(X)
+```
+
+```{python}
+plt.close()
+ax = sns.scatterplot(x = X_transform[:,0], y = X_transform[:,1],
+                hue = preds_3)
+ax.set(xlabel="PC 1", ylabel="PC 2")
+ax.set(ylim=(65, -40))
+ax.set(ylim=(65, -40));
+
+```
+
+
+## kmeans 4 groups
+
+```{python}
+X = genos4
+y = inds.Population
+K = 4
+kmeans_K4 = KMeans(n_clusters=K, max_iter=1000).fit(X)
+preds_4 = kmeans_K4.fit_predict(X)
+```
+
+```{python}
+plt.close()
+ax = sns.scatterplot(x = X_transform[:,0], y = X_transform[:,1],
+                hue = preds_4)
+ax.set(xlabel="PC 1", ylabel="PC 2")
+ax.set(ylim=(65, -40))
+ax.set(ylim=(65, -40));
+
+```
+
+## kmeans 5 groups
+
+```{python}
+X = genos4
+y = inds.Population
+K = 5
+kmeans_K5 = KMeans(n_clusters=K, max_iter=1000).fit(X)
+preds_5 = kmeans_K5.fit_predict(X)
+```
+
+```{python}
+plt.close()
+ax = sns.scatterplot(x = X_transform[:,0], y = X_transform[:,1],
+                hue = preds_5)
+ax.set(xlabel="PC 1", ylabel="PC 2")
+ax.set(ylim=(65, -40))
+ax.set(ylim=(65, -40));
+
+```
+
+
+## kmeans silhouette score
+```{python}
+
+X = genos4
+y = inds.Population
+
+
+inertia = []
+silhouette = []
+K = list(range(2, 21))
+for k in K:
+    kmeans = KMeans(n_clusters=k, max_iter=1000).fit(X)
+    inertia.append(kmeans.inertia_ )# 
+
+    silhouette.append(silhouette_score(X, labels = kmeans.fit_predict(X)))
+```
+
+```{python}
+plt.close()
+plt.scatter(K, silhouette)
+plt.plot(K, silhouette)
+plt.xticks(np.arange(0, 21, 1.0));
+
+
+```
+
+```{python}
+X = genos4
+y = inds.Population
+est = KMeans(n_clusters=8)
+est.fit(X)
+labels = est.labels_
+
+inds["k_8"] = labels
+```
+
+```{python}
+pd.pivot(inds,columns = ["k_8"], index = ["Continental Group", "Population"], values = "UID")
+```
+
+
+
+
+
+
+## K-nn
+
+
+```{python}
+from sklearn.neighbors import KNeighborsClassifier, NeighborhoodComponentsAnalysis
+clf = KNeighborsClassifier(n_neighbors=50)
+
+clf_fit = clf.fit(X, y)
+
+clf_pred = clf_fit.predict(X_23am)
+```
+
+
+## randfor
+
+
+```{python}
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.datasets import make_classification
+clf = RandomForestClassifier(max_depth=2, random_state=0)
+clf.fit(X, y)
+clf.predict(X_23am)
+clf.classes_
+
+pred_probs = pd.DataFrame({"Populations":pd.Series(clf.classes_),
+"Probabilities":pd.Series(clf.predict_proba(X_23am)[0])})
+
+
+```
+
+
+```{python}
+pred_probs2 = pred_probs.sort_values("Probabilities").round(3)
+```
+
+
+```{python}
+plt.close()
+sns.barplot(data = pred_probs2,
+x = "Probabilities", y = "Populations")
+```

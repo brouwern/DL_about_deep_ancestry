@@ -156,8 +156,8 @@ ul.task-list li input[type="checkbox"] {
 <section id="consumer-genomics-data" class="level2">
 <h2 class="anchored" data-anchor-id="consumer-genomics-data">Consumer genomics data</h2>
 <p>Direct-to-consumer genomic testing services typically provide a thorough set of results, as well as access to your own raw data. While the results create by companies can be <a href="https://customercare.23andme.com/hc/en-us/articles/5328923468183-Understanding-The-Difference-Between-Your-Ancestry-Percentages-Your-Country-Matches-and-Your-Genetic-Groups">very flashy</a>. The raw data is rather under-whelming, as we can see when its loaded into Python:</p>
-<div id="43dffa5f" class="cell" data-execution_count="1">
-<div class="cell-output cell-output-display" data-execution_count="5">
+<div id="5cdd8502" class="cell" data-execution_count="1">
+<div class="cell-output cell-output-display" data-execution_count="1">
 <div>
 
 
@@ -201,8 +201,8 @@ ul.task-list li input[type="checkbox"] {
 </div>
 <p>This data is froom 23andMe, but is similar to genomic data from other services. Each row of these data represent a position in the human genomes where people frequently vary from each other with the <strong>genotype</strong> indicating what the sequence is for the person’s DNA being examined. Two letters are shown, one for each parent of the person. “CC” in the top row means that for this place in the genome, the person recieved a “C” DNA base from both parents. In contrast, the “AGs” on the rows below indicate that they inherited an “A” DNA base from one parent and a “G” from another. For any given row there are 3 possible combinations of letter; for example, for the AG rows, somewhere in the world there are poeple who are AA and others who are GG.</p>
 <p>To carry out genomic analyses, these data have to be converted to numbers. For our analysis, we’ll use a simple number system where each of the three combinations that can occur on a row are coded 0, 1 or 2. In the case of the AG rows, “AG” would be coded as an intermediate value of 1, while AA and GG would be coded as 0 and 2. This results in data that looks like this:</p>
-<div id="0edc93e6" class="cell" data-execution_count="2">
-<div class="cell-output cell-output-display" data-execution_count="6">
+<div id="f25f790a" class="cell" data-execution_count="2">
+<div class="cell-output cell-output-display" data-execution_count="2">
 <div>
 
 
@@ -257,11 +257,12 @@ ul.task-list li input[type="checkbox"] {
 <p>In the case of genomic data, information on samples DNA enters into the PCA and the lower dimensional data is then plotted. Dat points represent individuals people in the sample, and the points are color-coded based on the geographic location where the individuals are from. This allows PCA to serve as both a visualization and clustering approach.</p>
 <p>Additionally, someone whose ancestry it not known or uncertain can have their data transformed by the PCA and plotted along with the other points. The location of the prediction relative to other data points indicates genetic similarity and potentially similar ancestry.</p>
 <p>The figure below shows data from Jinchuan Xing’s study discussed above processed through PCA. The data are color-coded by the large-scale geographic areas the samples are derived from. I then took a <a href="https://github.com/mvolz/osgen/tree/master/sample%20genomes">23andMe record</a> for a person with unknown ancestry and used the PCA model to estimate which samples form Xing this person is most similar to. Based on their location, they are most likely predominantly European ancestry.</p>
-<div id="563b93f1" class="cell" data-execution_count="4">
+<div id="f6ab8f26" class="cell" data-execution_count="4">
 <div class="cell-output cell-output-display">
-<div>
+<div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="index_files/figure-html/cell-5-output-1.png" width="611" height="449" class="figure-img"></p>
+<p><img src="index_files/figure-html/cell-5-output-1.png" width="617" height="449" class="figure-img"></p>
+<figcaption>Principal Components Analysis (PCA) biplot showing the location (X) of a sample with uncertain ancestry. Based on its location, it can be inferred that this person is likely to be of predominantly European ancestry.</figcaption>
 </figure>
 </div>
 </div>

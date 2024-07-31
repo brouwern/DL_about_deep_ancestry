@@ -1,0 +1,125 @@
+---
+title: "Untitled"
+format: html
+---
+
+
+## Preliminaries 
+
+### Libraries
+
+```{python}
+import pandas as pd
+import numpy as np
+# import polars as pl
+```
+
+
+### Data
+
+~615 mb file
+
+```{python}
+genos = pd.read_csv("JHS_Genotype.csv") # 246554 variants; 615 mb
+inds  = pd.read_csv("JHS_Ind.csv")      # 850 ind
+snps  = pd.read_csv("JHS_SNP.csv")      # 246554 variants
+df = pd.read_csv("23andmedata_rsVars_only.csv") # 949904 variants
+```
+
+Upon merging (done below), there will be ~71454 variants in common.  Some variants have missing data, which we will be removed later.
+
+
+The `genos` data is the actual genotypes (AA, AT, TG, etc.) for each person 
+
+```{python}
+genos.head()
+```
+
+The `df` dataframe is our data for a single person from 23andMe.
+```{python}
+df.head()
+```
+
+The `snps` dataframe is a catalogue of all the SNPs in the Xing et at. 2010 data.
+```{python}
+snps.head()
+```
+
+### Data cleaning
+
+Reconcile and relabel column names form Xing so they will place nice with the 23andMe data:
+
+```{python}
+snps = snps.rename(columns={'rs_number': 'rsid', 
+                        'chromosome': 'chrom_Xing', 
+                        "position": "pos_Xing",
+                        "allele A": "allele_A_Xing",
+                        "allele B": "allele_B_Xing"})
+```
+
+
+### Data merging
+
+Merge the snps data from Xing with the 23andMe data.  This mere is done so that entires that don't occur in **BOTH** datasets are removed.
+
+TODO: come up with a better dataframe name
+
+```{python}
+x = snps.merge(df, on = "rsid")
+```
+
+```{python}
+print("The 23andMe data contains",df.shape[0],"variants")
+print("The Xing et al. 2010 data contains",snps.shape[0],"variants")
+print("When merged, there are",x.shape[0],"variants that are in common with both")
+```
+
+```{python}
+x.head()
+```
+
+Quality control: do the number of variants on each chromsome match for both datasets?
+```{python}
+chroms_23am = x.chrom.value_counts()
+chroms_xing = x.chrom_Xing.value_counts()
+```
+
+TODO: finish this
+
+
+
+Save the list of variants which are in common
+
+```{python}
+x.to_csv("23am_merged_with_Xing.csv", index=True)
+```
+
+
+
+## Merge 
+
+Individuals in columns, variants in rows; genotypes as strings, e.g. "CC"
+
+```{python}
+genos = genos.rename(columns={'rs_number': 'rsid'})
+```
+
+```{python}
+#x = genos.merge(df[,["rsid"]], on = "rsid")
+```
+
+```{python}
+genos2 = df[["rsid","chrom"]].merge(genos, on = "rsid")
+```
+
+
+
+
+```{python}
+genos2.to_csv("23am_merge_Xing.csv", index=False)
+```
+
+
+```{python}
+genos2.head()
+```

@@ -62,7 +62,7 @@ The figure below shows data from Jinchuan Xing's study discussed above processed
 
 ```{python}
 #| echo: false
-#| fig-cap: "Principal Components Analysis (PCA) biplot showing the location (X) of a sample with uncertain ancestry.  Based on its location, it can be inferred that this person is likely to be of predominantly European ancestry."
+
 
 ## Preliminaries
 ### libraries
@@ -113,6 +113,7 @@ X_23am_PCA_transform = pca.transform(X_23am)
 
 ```{python}
 #| echo: false
+#| fig-cap: "Principal Components Analysis (PCA) biplot showing the location (X) of a sample with uncertain ancestry.  Based on its location, it can be inferred that this person is likely to be of predominantly European ancestry."
 
 ## plot graph
 #plt.close()
@@ -142,9 +143,25 @@ plt.scatter(y = pred_y,
                 linewidths = 5,
                 facecolor = "black",
                 s=200);
-plt.annotate("Prediction", xy=(pred_x-4, pred_y-2), 
-xytext=(-10,20),
-            arrowprops=dict(arrowstyle="->"));
+plt.annotate("Prediction", 
+                xy=(pred_x-2, pred_y-1), 
+                xytext=(-18,35),
+             arrowprops=dict(arrowstyle="->"));
+plt.annotate("Europeans", 
+                xy=(20,20), 
+                xytext=(20,38));
+
+plt.annotate("West\nAsians", 
+                xy=(4,32), 
+                xytext=(4,32));
+
+plt.annotate("Central\nAsians", 
+                xy=(20,19), 
+                xytext=(20,19));
+plt.annotate("East\nAsians", 
+                xy=(30,-25), 
+                xytext=(30,-25));
+
 
 
 ```

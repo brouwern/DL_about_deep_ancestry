@@ -1,0 +1,399 @@
+---
+title: "Process 23 and me data"
+format: html
+---
+
+Original files 
+
+* 1117.23andme.txt: sample file with >900,000 variants
+* blank.23andme.txt
+* sample.23andme.txt
+
+from https://github.com/mvolz/osgen/tree/master/sample%20genomes
+
+colab version
+https://colab.research.google.com/drive/1LAZuy6jXXaGB3X9_I-_aupGuFKfgX6q5?usp=sharing
+
+## Preliminaries
+
+### Load libraries
+
+```{python}
+import os
+import time
+import numpy as np
+import pandas as pd
+
+
+
+```
+
+
+###
+
+
+```{python}
+os.getcwd()
+```
+
+```{python}
+mydir = "c:\\Users\\nlb24\\pyohio"
+os.chdir(mydir)
+os.getcwd()
+```
+
+
+Read in the sample file from https://github.com/mvolz/osgen/tree/master/sample%20genomes
+
+
+Note - throws and error due to "mixed data types" in the chromosome colum unless low_memory=False
+```{python}
+start = time.time()
+df = pd.read_csv("1117_23andme.txt", 
+                    low_memory=False,
+                    sep='\t',
+                    skiprows = 14)
+end = time.time()
+diff = round(end-start,3)
+print(diff)
+```
+
+```{python}
+df.columns
+```
+
+Rename the column names using a dictionary
+```{python}
+df = df.rename(columns={'# rsid': 'rsid', 
+                        'chromosome': 'chrom', 
+                        "position": "pos",
+                        "genotype": "geno"})
+```
+
+```{python}
+df.head()
+```
+
+```{python}
+df.shape
+```
+
+```{python}
+print("This file has",df.shape[0],"genetic variants in it.")
+```
+
+
+## Type of ID
+
+The "rsid" column contains both true "rs" IDS, which are standard in genomics, and entries marked "i", which are are generated internally by 23andme. There are about 11,000 of these 23andme-specific "i" entries that.  Because of the prevalence of 23andMe data, some websites such as [SNPedia](https://snpedia.com/) contain information on these locations.  However, we won't be able to match easily match "i" with other data sources such as the 1000 Genomes Project, and so we'll flag them for easy removal when we merge with other datasets.  There are interesting things that 23andMe uses "i" codes for, such as [Sickle Cell Anemia](https://www.snpedia.com/index.php/Sickle_Cell_Anemia), it there are some tasks where these will be useful.
+
+
+Create a new column called "ID_type" with a default entry of "rs", then determine which rows have "i" IDs.  New columns in Pandas are made with the .assign() method.
+
+```{python}
+df = df.assign(ID_type = "rs")
+```
+
+Change appropriater entries to "i"
+
+```{python}
+df.loc[df.rsid.str.contains("i"),"ID_type"] = "i"
+```
+
+```{python}
+df["ID_type"].value_counts()
+```
+```{python}
+i_s = df.ID_type.value_counts().loc["i"]
+print("There are",i_s,"genetic variants that are not assigned a conventional rsid.  These will have to be removed for some analyses")
+```
+
+## Which Genome build?
+
+https://colab.research.google.com/drive/1LAZuy6jXXaGB3X9_I-_aupGuFKfgX6q5?usp=sharing
+
+* GRCh37, aka  hg19
+
+"By default the genotypes displayed on the 23andMe website refer to the plus (+) strand of the Genome Reference Consortium Human Build 37 (GRCh37 or “Build 37”) genome assembly. In Browse Raw Data, genotypes are also reported on the plus (+) strand of the subsequent GRCh38 (“Build 38”) genome assembly."
+
+
+https://www.snpedia.com/index.php/Ambiguous_flip
+
+
+## Clean variants
+
+
+* D = deletion
+* I = insertion
+* -- = no data 
+
+
+"In downloaded data, the entry for any uncalled SNP displays ‘--’ instead of a two-letter genotype." [(23andme)](https://customercare.23andme.com/hc/en-us/articles/212883677-How-23andMe-Reports-Genotypes)
+
+* A
+* T
+* C
+* G
+
+"...the genotype field may contain one or two symbols representing nucleotides. If only one symbol is present, it is assumed the second nucleotide is the same as the first; e.g. A represents the same information as AA." [(23andme )](https://www.jade-cheng.com/au/23andme-to-plink/).  There is no reason given for this.  
+
+
+
+
+
+
+Replace single letters with assumed homozygote condition
+
+* A = AA
+* T = TT
+* C = CC
+* G = GG
+* I = II ? 
+* D = DD ?
+
+TODO: Why no IA/AI, IT/TI, IC/CI, IG/GI?  Why are almost all indels homozygous?
+
+```{python}
+df.geno = df.geno.replace("A","AA")
+df.geno = df.geno.replace("T","TT")
+df.geno = df.geno.replace("C","CC")
+df.geno = df.geno.replace("G","GG")
+df.geno = df.geno.replace("I","II")  #Assume I = II
+df.geno = df.geno.replace("D","DD")  #Assume D = DD
+```
+
+
+```{python}
+df.geno.value_counts()
+```
+
+
+
+##
+
+* Purines     = Adenine (A) and Guanine (G)
+* Pyrimidines =  Cytosine (C), Thymine (T), and Uracil (U).
+
+A=T
+C≡G
+
+"AA" means
+maternal +: nnnAnnn; one of the As shown
+paternal +: nnnAnnn; the other A shown
+
+maternal +: nnnAnnn; one of the As shown
+maternal -: nnnTnnn; the T paired with it
+
+paternal +: nnnAnnn
+paternal -: nnnTnnn
+
+
+
+
+maternal +: nnnAnnn; A = purine
+maternal -: nnnTnnn; T = pyrimidine
+
+paternal +: nnnAnnn
+paternal -: nnnTnnn
+
+
+
+why some pairs not present?
+
+AA    151292 Pur / Pur
+AT       591 Pur / Pyr
+AG    110759 Pur / Pur
+AC     25578 Pur / Pyr
+
+
+CC    176167 Pyr/Pyr
+CT    111015 Pyr/Pyr
+CG      1012 Pyr/Pur
+CA?          Pyr/Pur
+
+GG    175141 Pur / Pur
+GT     25570 Pur / Pyr
+GC?          Pur / Pyr
+GA?          Pur / Pur
+
+TT    150995
+TG?
+TA?
+TC?
+
+--     31568
+
+II       735
+DD       168
+DI        22
+
+
+
+
+
+
+
+
+## Create summary column to flag indels
+
+
+```{python}
+df['indelYN'] = df.geno
+df['indelYN'] = df['indelYN'].replace(regex = 'D.*$', value = 'indel').ffill()
+df['indelYN'] = df['indelYN'].replace(regex = 'I.*$', value = 'indel').ffill()
+df['indelYN'] = df['indelYN'].replace(regex = '--*$', value = None).ffill()
+df.loc[df.indelYN != "indel","indelYN"] = "bp"
+
+```
+
+```{python}
+df.indelYN.value_counts()
+```
+
+
+
+## Homozygosity
+
+Label posiitons as homo or heterozygous
+
+Includes indels
+
+```{python}
+df["zygosity"] = df.geno.replace(["AA", "CC", "GG", 'TT',
+                                    "II","DD"],  
+                                    "homo")
+df.zygosity    = df.zygosity.replace(["AT", "AC", "AG", 
+                                        'AI', "AD"], #?
+                                        "hetero")
+df.zygosity    = df.zygosity.replace(["TA", "TC", "TG", 'TI',"TD"], "hetero")
+df.zygosity    = df.zygosity.replace(["GA", "GC", "GT", 'GI',"GD"], "hetero")
+df.zygosity    = df.zygosity.replace(["CA", "CT", "CG", 'CI',"CD"], "hetero")
+df.zygosity    = df.zygosity.replace(["DI","ID"], "hetero")
+df.zygosity    = df.zygosity.replace(["--"], None)
+```
+
+
+```{python}
+df.zygosity.value_counts()
+```
+
+
+Code zygosity as 0 or 1
+```{python}
+df["zygosity_num"] = df.zygosity.replace("homo","1")
+df["zygosity_num"] = df.zygosity_num.replace("hetero","0")
+df.zygosity_num = pd.to_numeric(df.zygosity_num, errors='coerce').fillna(0).astype(np.int64)
+```
+
+
+## 
+
+## code chromosoems as numeric
+
+```{python}
+df.chrom.value_counts()
+```
+
+2     77346
+12    47125
+22    12877 # df[df.chrom == "22"].shape
+22     1223 # df[df.chrom == 22].shape
+
+12877
+
+```{python}
+df[df.chrom == "22"].shape
+```
+
+```{python}
+df[df.chrom.str.contains("2")==True].shape
+```
+
+
+Returns 0 valus when converted to numeric?
+```{python}
+df["chrom_numeric"] = df.chrom
+df["chrom_numeric"] = df.chrom_numeric.replace(19,"19")
+df["chrom_numeric"] = df.chrom_numeric.replace("19","19")
+df["chrom_numeric"] = df.chrom_numeric.replace(22,"22")
+df["chrom_numeric"] = df.chrom_numeric.replace("22","22")
+df["chrom_numeric"] = df.chrom_numeric.replace("X","23")
+df["chrom_numeric"] = df.chrom_numeric.replace("Y","24")
+df["chrom_numeric"] = df.chrom_numeric.replace("MT","25")
+
+
+```
+
+```{python}
+df.chrom_numeric = pd.to_numeric(df.chrom_numeric, errors='coerce').fillna(0).astype(np.int64)
+```
+
+```{python}
+df.chrom_numeric.value_counts().sort_index()
+```
+
+```{python}
+df.chrom.value_counts()
+df.chrom_numeric.value_counts()
+```
+
+
+
+
+
+
+
+
+## Subset data
+
+
+TODO: totally remove --
+
+Remove "--" entries
+
+```{python}
+df_no_nulls = df.drop(df[df.geno == "--"].index)
+```
+
+Remove i entries
+```{python}
+df_no_i = df_no_nulls.drop(df_no_nulls[df_no_nulls.ID_type == "i"].index)
+
+```
+
+Just specific chromosomes, for examples
+```{python}
+df_chr01 = df_no_i[df_no_i.chrom_numeric == 1]
+df_chr22 = df_no_i[df_no_i.chrom_numeric == 22]
+```
+
+```{python}
+df.shape[0]
+df_no_nulls.shape[0]
+df_no_i.shape[0]
+df_chr01.shape[0]
+df_chr22.shape[0]
+```
+
+
+
+
+
+## Save files
+
+```{python}
+df.to_csv("23andme_data_all.csv", index=False)
+df_no_nulls.to_csv("23andmedata_nonulls.csv", index=False)
+df_no_i.to_csv("23andmedata_rsVars_only.csv", index=False)
+df_chr01.to_csv("23andmedata_chrom01_rsVars_only.csv", index=False)
+df_chr22.to_csv("23andmedata_chrom22_rsVars_only.csv", index=False)
+```
+
+
+```{python}
+
+```
+
+
+
+
