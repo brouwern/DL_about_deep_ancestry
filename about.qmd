@@ -1,7 +1,11 @@
 ---
-title: "About `Deep Learning about deep ancestry`"
+title: "About"
 ---
 
 Welcome to "Deep Learning about deep ancestry".  This website introduces you to the basics of how DNA sequences and machine learning can be used to characterize someone's ancestry.  The main landing page of the site contains a high-level overview, while additional sections of the site delve into how genomic data is processed and the machine learning algorithms use.
 
-If you have any questions pleae contact me at brouwern at gmail.com or message me on 
+This material is based on material from a course I taught at the University of Pittsburgh and a presentation at PyOhio 2024. The main dataset used is from Xing et al. 2010, "[Toward a more uniform sampling of human genetic diversity: a survey of worldwide populations by high-density genotyping](https://www.sciencedirect.com/science/article/pii/S0888754310001552)".
+
+If you have any questions, please contact me at brouwern at gmail.com or message me on [LinkedIn](https://www.linkedin.com/in/nathan-brouwer-phd-97100980/).
+
+![PyOhio](pyohiologo.png)

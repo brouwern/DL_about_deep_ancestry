@@ -27,7 +27,7 @@ df23am = pd.read_csv("sample_23andme.txt",
                         low_memory=False, 
                         sep='\t', 
                         skiprows = 14)    # skip 14 rows of meta data
-df23am
+df23am.iloc[:3,]
 ```
 
 This data is froom 23andMe, but is similar to genomic data from other services.  Each row of these data represent a position in the human genomes where people frequently vary from each other with  the **genotype** indicating what the sequence is for the person's DNA being examined.  Two letters are shown, one for each parent of the person.  "CC" in the top row means that for this place in the genome, the person recieved a "C" DNA base from both parents.  In contrast, the "AGs" on the rows below indicate that they inherited an "A" DNA base from one parent and a "G" from another.  For any given row there are 3 possible combinations of letter; for example, for the AG rows, somewhere in the world there are poeple who are AA and others who are GG.
@@ -40,7 +40,7 @@ To carry out genomic analyses, these data have to be converted to numbers.  For 
 # Show preview of data
 temp = df23am.head().copy()
 temp.genotype = [2,0,1,1,1,]
-temp
+temp.iloc[:3,:]
 ```
 
 An important to point out about genomic data is that it easily characterized as "big data".  For example, data from 23andMe for one person contains over 900,000 rows!  This may seem huge, but its actually less than 0.05% of the size of the human genome.
@@ -144,8 +144,10 @@ plt.scatter(y = pred_y,
                 facecolor = "black",
                 s=200);
 plt.annotate("Prediction", xy=(pred_x-4, pred_y-2), 
-xytext=(-20,20),
+xytext=(-10,20),
             arrowprops=dict(arrowstyle="->"));
+
+
 ```
 
 
