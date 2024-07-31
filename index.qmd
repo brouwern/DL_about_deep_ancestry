@@ -1,7 +1,151 @@
 ---
-title: "project"
+title: "Deep Learning about deep ancestry: Demonstrating how genetic testing services can predict your heritage from your DNA"
+author: "Nathan L. Brouwer, PhD"
 ---
 
-This is a Quarto website.
+In the last 20 years, using DNA to charaterize people's ancestry has become a [multi-billion dollar industry](https://www.alumni.hbs.edu/stories/Pages/story-impact.aspx?num=9253).  But how can a small sample of cells in a test-tube be used to determine things about people's heritage, ancestry, and parentage? 
 
-To learn more about Quarto websites visit <https://quarto.org/docs/websites>.
+The technology that makes modern genomic ancestry assessment possible is a combination from multiple fields: advanced DNA sequencing, genome science, and machine learning.  While you can't sequence your own genome (yet), it takes only a moderate amount of computer programming skills and some open-access data to see how companies like 23andMe and Ancestry.com do their magic. 
+
+This webpage
+
+1. Briefly explains what **raw genomic testing data** looks like
+1. Introduces the types of **population-scale genome data** needed to understand ancestry
+1. Gives an overview of **machine learning models** used in genomics
+1. Shows how a person's ancestry can be predicted using a machine-learning model
+
+For background information on how the data are processed, the models built, and ancestry predicted, see the other parts of this webpage.
+
+## Consumer genomics data
+
+Direct-to-consumer genomic testing services typically provide a thorough set of results, as well as access to your own raw data.  While the results create by companies can be [very flashy](https://customercare.23andme.com/hc/en-us/articles/5328923468183-Understanding-The-Difference-Between-Your-Ancestry-Percentages-Your-Country-Matches-and-Your-Genetic-Groups).  The raw data is rather under-whelming, as we can see when its loaded into Python:
+
+```{python}
+#| echo: false
+import pandas as pd
+df23am = pd.read_csv("sample_23andme.txt", 
+                        low_memory=False, 
+                        sep='\t', 
+                        skiprows = 14)    # skip 14 rows of meta data
+df23am
+```
+
+This data is froom 23andMe, but is similar to genomic data from other services.  Each row of these data represent a position in the human genomes where people frequently vary from each other with  the **genotype** indicating what the sequence is for the person's DNA being examined.  Two letters are shown, one for each parent of the person.  "CC" in the top row means that for this place in the genome, the person recieved a "C" DNA base from both parents.  In contrast, the "AGs" on the rows below indicate that they inherited an "A" DNA base from one parent and a "G" from another.  For any given row there are 3 possible combinations of letter; for example, for the AG rows, somewhere in the world there are poeple who are AA and others who are GG.
+
+To carry out genomic analyses, these data have to be converted to numbers.  For our analysis, we'll use a simple number system where each of the three combinations that can occur on a row are coded 0, 1 or 2.  In the case of the AG rows, "AG" would be coded as an intermediate value of 1, while AA and GG would be coded as 0 and 2.  This results in data that looks like this:
+
+
+```{python}
+#| echo: false
+# Show preview of data
+temp = df23am.head().copy()
+temp.genotype = [2,0,1,1,1,]
+temp
+```
+
+An important to point out about genomic data is that it easily characterized as "big data".  For example, data from 23andMe for one person contains over 900,000 rows!  This may seem huge, but its actually less than 0.05% of the size of the human genome.
+
+## Population genomics data
+
+In order to characterize someones ancestry we must have a database of many people from around the world to compare them too.  While consumer genomics companies have compiled their extensive but proprietery databases, there are also open-access datasets available for anyone to use.  The largest public database is the [1000 Genomes Project (1KGP)](https://en.wikipedia.org/wiki/1000_Genomes_Project), which contains genomic information on ~2500 people from 25 countries around the world.  1KGP data has been used in hundreds of scientific papers and can be accessed freely by anyone.  
+
+Unfortunately, 1KGP data is a bit unwieldly to access without specialized software; luckily, subsets of the data have been posted by some researchers.  In this analysis, we'll use [data](https://jorde.genetics.utah.edu/published-data/) provided by researchers from the University of Utah.  This study, led by [Jinchuan Xing](https://xinglab.genetics.rutgers.edu/people/jinchuan-xing/) and working in the lab of [Lynn Jorde](https://jorde.genetics.utah.edu/), integrated data from the 1000 Genomes Project with their own data, resulting in a dataset with 850 people from 40 different populations.  For each person in the dataset, they had genomic data similar to that shown above from 23andMe.
+
+## Machine learning and genomics
+
+Most machine learning models have applications in ppulation genomics, including dimension reduction, clustering, and supervised classification. One of the most common tools used traditionally in population genomics is Principal Components Analysis (PCA).  PCA is an unsupervised machine learning method which allows high dimensonal data to be visualized in 2 or 3 dimensions.  PCA scatterplots with 2 dimensions are called **biplots**, and those with 3 dimensions are **tri-plots**.
+
+In the case of genomic data, information on samples DNA enters into the PCA and the lower dimensional data is then plotted.  Dat points represent individuals people in the sample, and the points are color-coded based on the geographic location where the individuals are from.  This allows PCA to serve as both a visualization and clustering approach.
+
+Additionally, someone whose ancestry it not known or uncertain can have their data transformed by the PCA and plotted along with the other points.  The location of the prediction relative to other data points indicates genetic similarity and potentially similar ancestry.
+
+The figure below shows data from Jinchuan Xing's study discussed above processed through PCA.  The data are color-coded by the large-scale geographic areas the samples are derived from.  I then took a [23andMe record](https://github.com/mvolz/osgen/tree/master/sample%20genomes) for a person with unknown ancestry and used the PCA model to estimate which samples form Xing this person is most similar to.  Based on their location, they are most likely predominantly European ancestry.
+
+```{python}
+#| echo: false
+#| fig-cap: "Principal Components Analysis (PCA) biplot showing the location (X) of a sample with uncertain ancestry.  Based on its location, it can be inferred that this person is likely to be of predominantly European ancestry."
+
+## Preliminaries
+### libraries
+import pandas as pd
+from sklearn import decomposition
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+### load and prepare data
+#### load population data
+inds    = pd.read_csv("JHS_Ind.csv",index_col="UID")  
+
+# NOTE: this file is large and so get in a different directory
+genos4  = pd.read_csv("C:\\Users\\nlb24\OneDrive - University of Pittsburgh\\Desktop\\portfolio\\_23am_Xing_012_coded_noNA_scaled.csv")
+genos4  = genos4.rename(columns = {'Unnamed: 0': "UID"})
+genos4  = genos4.set_index("UID")
+genos4 = genos4.reindex(inds.index)
+
+#### load unknown individual data
+df_23am_Xing_subset2 = pd.read_csv("23am_Xing_subset_with_scaled_feat.csv")
+df_23am_Xing_subset2 = df_23am_Xing_subset2.set_index("rsid")
+
+## Final data prep
+### population data
+X_pca = genos4
+y_pca = inds.Population
+
+### individual data
+X_23am = pd.DataFrame(df_23am_Xing_subset2.scaled_value)
+X_23am = X_23am.T[X_pca.columns]
+
+
+
+## build model
+### fit PCA
+pca = decomposition.PCA(n_components=10)
+pca.fit(X_pca)
+
+### transform original data into PCA space
+X_pca_transform = pca.transform(X_pca)
+
+### transform unknown data into PCA space
+X_23am_PCA_transform = pca.transform(X_23am)
+
+```
+
+
+
+```{python}
+#| echo: false
+
+## plot graph
+#plt.close()
+pc01_var = round(pca.explained_variance_ratio_[0],2)*100
+x_label = f"PCA 1 \n({pc01_var}% of variance)"
+
+pc02_var = round(pca.explained_variance_ratio_[1],2)*100
+y_label = f"PCA 2 \n({pc02_var}% of variance)"
+
+pc03_var = round(pca.explained_variance_ratio_[2],2)*100
+
+ax = sns.scatterplot(y = X_pca_transform[:,1], 
+x = X_pca_transform[:,0]*-1,
+linewidth=0.1,edgecolor="white",
+alpha=0.75,
+                hue = inds["Continental Group"],
+                style  = inds["Continental Group"])
+ax.set(xlabel=x_label, ylabel=y_label)
+ax.set(ylim=(65, -40))
+ax.set(ylim=(50, -40))
+
+pred_y = X_23am_PCA_transform[0][1]
+pred_x = X_23am_PCA_transform[0][0]*-1
+plt.scatter(y = pred_y,
+                x = pred_x, 
+                marker='x', 
+                linewidths = 5,
+                facecolor = "black",
+                s=200);
+plt.annotate("Prediction", xy=(pred_x-4, pred_y-2), 
+xytext=(-20,20),
+            arrowprops=dict(arrowstyle="->"));
+```
+
+

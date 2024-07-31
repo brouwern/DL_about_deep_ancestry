@@ -1,4 +1,7 @@
 ---
-title: "About"
+title: "About `Deep Learning about deep ancestry`"
 ---
-test 
+
+Welcome to "Deep Learning about deep ancestry".  This website introduces you to the basics of how DNA sequences and machine learning can be used to characterize someone's ancestry.  The main landing page of the site contains a high-level overview, while additional sections of the site delve into how genomic data is processed and the machine learning algorithms use.
+
+If you have any questions pleae contact me at brouwern at gmail.com or message me on 
