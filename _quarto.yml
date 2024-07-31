@@ -3,7 +3,7 @@ project:
   output-dir: docs
 
 website:
-  title: "project"
+  title: "Deep Learning/Deep Ancestry"
   navbar:
     left:
       - href: index.qmd

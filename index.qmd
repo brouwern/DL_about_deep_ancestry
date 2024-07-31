@@ -1,6 +1,5 @@
 ---
 title: "Deep Learning about deep ancestry: Demonstrating how genetic testing services can predict your heritage from your DNA"
-author: "Nathan L. Brouwer, PhD"
 ---
 
 In the last 20 years, using DNA to charaterize people's ancestry has become a [multi-billion dollar industry](https://www.alumni.hbs.edu/stories/Pages/story-impact.aspx?num=9253).  But how can a small sample of cells in a test-tube be used to determine things about people's heritage, ancestry, and parentage? 

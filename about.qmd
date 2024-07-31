@@ -8,4 +8,4 @@ This material is based on material from a course I taught at the University of P
 
 If you have any questions, please contact me at brouwern at gmail.com or message me on [LinkedIn](https://www.linkedin.com/in/nathan-brouwer-phd-97100980/).
 
-![PyOhio](pyohiologo.png)
+![PyOhio](pyohiologo.png){width=100}
