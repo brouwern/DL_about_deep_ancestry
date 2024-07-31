@@ -1,14 +1,12 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
-<head>
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.5.45">
 
-<meta charset="utf-8" />
-<meta name="generator" content="quarto-1.5.45" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
-
-<meta name="author" content="Nathan L. Brouwer, PhD" />
+<meta name="author" content="Nathan L. Brouwer, PhD">
 
 <title>Deep Learning about deep ancestry: Demonstrating how genetic testing services can predict your heritage from your DNA – project</title>
 <style>
@@ -25,7 +23,23 @@ ul.task-list li input[type="checkbox"] {
 }
 </style>
 
-<!-- htmldependencies:E3FAD763 -->
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous"></script><script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -53,40 +67,41 @@ ul.task-list li input[type="checkbox"] {
     "search-label": "Search"
   }
 }</script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" integrity="sha512-c3Nl8+7g4LMSTdrm621y7kf9v3SDPnhxLNhcjFJbKECVnmZHTdo+IRO05sNLTH/D3vA6u1X32ehoLC7WFVdheg==" crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous" data-relocate-top="true"></script>
-<script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" integrity="sha512-c3Nl8+7g4LMSTdrm621y7kf9v3SDPnhxLNhcjFJbKECVnmZHTdo+IRO05sNLTH/D3vA6u1X32ehoLC7WFVdheg==" crossorigin="anonymous"></script>
 
 
-<link rel="stylesheet" href="styles.css" />
+
+<script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
+
+
+
+<link rel="stylesheet" href="styles.css">
 </head>
 
-<body>
+<body class="nav-fixed">
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top">
     <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
-    <a class="navbar-brand" href="/index.html">
+    <a class="navbar-brand" href="./index.html">
     <span class="navbar-title">project</span>
     </a>
   </div>
             <div id="quarto-search" class="" title="Search"></div>
-          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse"
-  aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation"
-  onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
   <span class="navbar-toggler-icon"></span>
 </button>
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll me-auto">
   <li class="nav-item">
-    <a class="nav-link" href="/index.html"> 
+    <a class="nav-link active" href="./index.html" aria-current="page"> 
 <span class="menu-text">Home</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="/about.html"> 
-<span class="menu-text">About &#39;Deep Learning about deep ancestry</span></a>
+    <a class="nav-link" href="./about.html"> 
+<span class="menu-text">About ’Deep Learning about deep ancestry</span></a>
   </li>  
 </ul>
           </div> <!-- /navcollapse -->
@@ -100,7 +115,15 @@ ul.task-list li input[type="checkbox"] {
 <!-- sidebar -->
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        <div id="quarto-toc-target"></div>
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#consumer-genomics-data" id="toc-consumer-genomics-data" class="nav-link active" data-scroll-target="#consumer-genomics-data">Consumer genomics data</a></li>
+  <li><a href="#population-genomics-data" id="toc-population-genomics-data" class="nav-link" data-scroll-target="#population-genomics-data">Population genomics data</a></li>
+  <li><a href="#machine-learning-and-genomics" id="toc-machine-learning-and-genomics" class="nav-link" data-scroll-target="#machine-learning-and-genomics">Machine learning and genomics</a></li>
+  </ul>
+</nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
@@ -129,15 +152,7 @@ ul.task-list li input[type="checkbox"] {
 
 </header>
 
-<nav id="TOC" role="doc-toc">
-    <h2 id="toc-title">On this page</h2>
-   
-  <ul>
-  <li><a href="#consumer-genomics-data" id="toc-consumer-genomics-data">Consumer genomics data</a></li>
-  <li><a href="#population-genomics-data" id="toc-population-genomics-data">Population genomics data</a></li>
-  <li><a href="#machine-learning-and-genomics" id="toc-machine-learning-and-genomics">Machine learning and genomics</a></li>
-  </ul>
-</nav>
+
 <p>In the last 20 years, using DNA to charaterize people’s ancestry has become a <a href="https://www.alumni.hbs.edu/stories/Pages/story-impact.aspx?num=9253">multi-billion dollar industry</a>. But how can a small sample of cells in a test-tube be used to determine things about people’s heritage, ancestry, and parentage?</p>
 <p>The technology that makes modern genomic ancestry assessment possible is a combination from multiple fields: advanced DNA sequencing, genome science, and machine learning. While you can’t sequence your own genome (yet), it takes only a moderate amount of computer programming skills and some open-access data to see how companies like 23andMe and Ancestry.com do their magic.</p>
 <p>This webpage</p>
@@ -149,28 +164,16 @@ ul.task-list li input[type="checkbox"] {
 </ol>
 <p>For background information on how the data are processed, the models built, and ancestry predicted, see the other parts of this webpage.</p>
 <section id="consumer-genomics-data" class="level2">
-<h2>Consumer genomics data</h2>
+<h2 class="anchored" data-anchor-id="consumer-genomics-data">Consumer genomics data</h2>
 <p>Direct-to-consumer genomic testing services typically provide a thorough set of results, as well as access to your own raw data. While the results create by companies can be <a href="https://customercare.23andme.com/hc/en-us/articles/5328923468183-Understanding-The-Difference-Between-Your-Ancestry-Percentages-Your-Country-Matches-and-Your-Genetic-Groups">very flashy</a>. The raw data is rather under-whelming, as we can see when its loaded into Python:</p>
 <div id="c23ad18d" class="cell" data-execution_count="1">
 <div class="cell-output cell-output-display" data-execution_count="1">
 <div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
 
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
 
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
-
-<table class="dataframe caption-top" data-quarto-postprocess="true" data-border="1">
+<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
 <thead>
-<tr class="header" style="text-align: right;">
+<tr class="header">
 <th data-quarto-table-cell-role="th"></th>
 <th data-quarto-table-cell-role="th"># rsid</th>
 <th data-quarto-table-cell-role="th">chromosome</th>
@@ -211,23 +214,11 @@ ul.task-list li input[type="checkbox"] {
 <div id="fb92525c" class="cell" data-execution_count="2">
 <div class="cell-output cell-output-display" data-execution_count="2">
 <div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
 
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
 
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
-
-<table class="dataframe caption-top" data-quarto-postprocess="true" data-border="1">
+<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
 <thead>
-<tr class="header" style="text-align: right;">
+<tr class="header">
 <th data-quarto-table-cell-role="th"></th>
 <th data-quarto-table-cell-role="th"># rsid</th>
 <th data-quarto-table-cell-role="th">chromosome</th>
@@ -266,12 +257,12 @@ ul.task-list li input[type="checkbox"] {
 <p>An important to point out about genomic data is that it easily characterized as “big data”. For example, data from 23andMe for one person contains over 900,000 rows! This may seem huge, but its actually less than 0.05% of the size of the human genome.</p>
 </section>
 <section id="population-genomics-data" class="level2">
-<h2>Population genomics data</h2>
+<h2 class="anchored" data-anchor-id="population-genomics-data">Population genomics data</h2>
 <p>In order to characterize someones ancestry we must have a database of many people from around the world to compare them too. While consumer genomics companies have compiled their extensive but proprietery databases, there are also open-access datasets available for anyone to use. The largest public database is the <a href="https://en.wikipedia.org/wiki/1000_Genomes_Project">1000 Genomes Project (1KGP)</a>, which contains genomic information on ~2500 people from 25 countries around the world. 1KGP data has been used in hundreds of scientific papers and can be accessed freely by anyone.</p>
 <p>Unfortunately, 1KGP data is a bit unwieldly to access without specialized software; luckily, subsets of the data have been posted by some researchers. In this analysis, we’ll use <a href="https://jorde.genetics.utah.edu/published-data/">data</a> provided by researchers from the University of Utah. This study, led by <a href="https://xinglab.genetics.rutgers.edu/people/jinchuan-xing/">Jinchuan Xing</a> and working in the lab of <a href="https://jorde.genetics.utah.edu/">Lynn Jorde</a>, integrated data from the 1000 Genomes Project with their own data, resulting in a dataset with 850 people from 40 different populations. For each person in the dataset, they had genomic data similar to that shown above from 23andMe.</p>
 </section>
 <section id="machine-learning-and-genomics" class="level2">
-<h2>Machine learning and genomics</h2>
+<h2 class="anchored" data-anchor-id="machine-learning-and-genomics">Machine learning and genomics</h2>
 <p>Most machine learning models have applications in ppulation genomics, including dimension reduction, clustering, and supervised classification. One of the most common tools used traditionally in population genomics is Principal Components Analysis (PCA). PCA is an unsupervised machine learning method which allows high dimensonal data to be visualized in 2 or 3 dimensions. PCA scatterplots with 2 dimensions are called <strong>biplots</strong>, and those with 3 dimensions are <strong>tri-plots</strong>.</p>
 <p>In the case of genomic data, information on samples DNA enters into the PCA and the lower dimensional data is then plotted. Dat points represent individuals people in the sample, and the points are color-coded based on the geographic location where the individuals are from. This allows PCA to serve as both a visualization and clustering approach.</p>
 <p>Additionally, someone whose ancestry it not known or uncertain can have their data transformed by the PCA and plotted along with the other points. The location of the prediction relative to other data points indicates genetic similarity and potentially similar ancestry.</p>
@@ -279,22 +270,18 @@ ul.task-list li input[type="checkbox"] {
 <div id="2ae7a7ba" class="cell" data-execution_count="4">
 <div class="cell-output cell-output-display">
 <div>
-<figure>
-<p><img src="index_files/figure-html/cell-5-output-1.png" width="611" height="449" /></p>
+<figure class="figure">
+<p><img src="index_files/figure-html/cell-5-output-1.png" width="611" height="449" class="figure-img"></p>
 </figure>
 </div>
 </div>
 </div>
-<div id="quarto-navigation-envelope" class="hidden">
-<p><span class="hidden quarto-markdown-envelope-contents" data-render-id="quarto-int-sidebar-title">project</span> <span class="hidden quarto-markdown-envelope-contents" data-render-id="quarto-int-navbar-title">project</span> <span class="hidden quarto-markdown-envelope-contents" data-render-id="quarto-int-navbar:Home">Home</span> <span class="hidden quarto-markdown-envelope-contents" data-render-id="quarto-int-navbar:/index.html">/index.html</span> <span class="hidden quarto-markdown-envelope-contents" data-render-id="quarto-int-navbar:About &#39;Deep Learning about deep ancestry">About ’Deep Learning about deep ancestry</span> <span class="hidden quarto-markdown-envelope-contents" data-render-id="quarto-int-navbar:/about.html">/about.html</span></p>
-</div>
-<div id="quarto-meta-markdown" class="hidden">
-<p><span class="hidden quarto-markdown-envelope-contents" data-render-id="quarto-metatitle">project - Deep Learning about deep ancestry: Demonstrating how genetic testing services can predict your heritage from your DNA</span> <span class="hidden quarto-markdown-envelope-contents" data-render-id="quarto-twittercardtitle">project - Deep Learning about deep ancestry: Demonstrating how genetic testing services can predict your heritage from your DNA</span> <span class="hidden quarto-markdown-envelope-contents" data-render-id="quarto-ogcardtitle">project - Deep Learning about deep ancestry: Demonstrating how genetic testing services can predict your heritage from your DNA</span> <span class="hidden quarto-markdown-envelope-contents" data-render-id="quarto-metasitename">project</span> <span class="hidden quarto-markdown-envelope-contents" data-render-id="quarto-twittercarddesc"></span> <span class="hidden quarto-markdown-envelope-contents" data-render-id="quarto-ogcardddesc"></span></p>
-</div>
+
+
 </section>
 
 </main> <!-- /main -->
-<script id = "quarto-html-after-body" type="application/javascript">
+<script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
   const toggleBodyColorMode = (bsSheetEl) => {
     const mode = bsSheetEl.getAttribute("data-mode");
@@ -716,6 +703,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 </script>
 </div> <!-- /content -->
 
-</body>
 
-</html>
+
+
+</body></html>
