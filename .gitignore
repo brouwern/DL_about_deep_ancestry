@@ -1,0 +1,7 @@
+*.pyc
+*.pyo
+__pycache__/
+*.csv
+_23am_Xing_012_coded_noNA_scaled.csv
+
+/.quarto/
