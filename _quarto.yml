@@ -9,9 +9,7 @@ website:
       - href: index.qmd
         text: Home
       - about.qmd
-      - text: "Articles"
-        menu:
-          - genome_size_intro.qmd       
+      - genome_size_intro.qmd       
 
 
 format:

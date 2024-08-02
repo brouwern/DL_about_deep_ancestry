@@ -133,17 +133,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <a class="nav-link" href="./about.html"> 
 <span class="menu-text">About</span></a>
   </li>  
-  <li class="nav-item dropdown ">
-    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-articles" role="link" data-bs-toggle="dropdown" aria-expanded="false">
- <span class="menu-text">Articles</span>
-    </a>
-    <ul class="dropdown-menu" aria-labelledby="nav-menu-articles">    
-        <li>
-    <a class="dropdown-item" href="./genome_size_intro.html">
- <span class="dropdown-text">Tutorial: How big is a genome? Exploring size and scope of the human genome in Python</span></a>
+  <li class="nav-item">
+    <a class="nav-link active" href="./genome_size_intro.html" aria-current="page"> 
+<span class="menu-text">Tutorial: How big is a genome? Exploring size and scope of the human genome in Python</span></a>
   </li>  
-    </ul>
-  </li>
 </ul>
           </div> <!-- /navcollapse -->
             <div class="quarto-navbar-tools">
@@ -207,7 +200,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="libraries" class="level3">
 <h3 class="anchored" data-anchor-id="libraries">Libraries</h3>
 <p>We’ll use standard Python data science libraries in this tutorial, including pandas, seaborn, and numpy.</p>
-<div id="7915f44e" class="cell" data-execution_count="1">
+<div id="0d736486" class="cell" data-execution_count="1">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> seaborn <span class="im">as</span> sns</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
@@ -219,7 +212,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h3 class="anchored" data-anchor-id="data">Data</h3>
 <p>The main dataset in this tutorial is a table of chromosome lengths from the <a href="https://www.ncbi.nlm.nih.gov/grc/human/data?asm=GRCh37">NCBI</a>.</p>
 <p>This is a small dataset, so we can quickly build a pandas dataframe from the data:</p>
-<div id="f5921c35" class="cell" data-execution_count="2">
+<div id="3800103d" class="cell" data-execution_count="2">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># raw data lists</span></span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>chromo_numeric <span class="op">=</span> [<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">4</span>,<span class="dv">5</span>,<span class="dv">6</span>,<span class="dv">7</span>,<span class="dv">8</span>,<span class="dv">9</span>,<span class="dv">10</span>,</span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>                  <span class="dv">11</span>,<span class="dv">12</span>,<span class="dv">13</span>,<span class="dv">14</span>,<span class="dv">15</span>,<span class="dv">16</span>,<span class="dv">17</span>,</span>
@@ -251,9 +244,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a>                           <span class="st">"snps_approx"</span>: snps_approx})</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>The assembled data looks like this:</p>
-<div id="c21bf308" class="cell" data-execution_count="3">
+<div id="3245e16d" class="cell" data-execution_count="3">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>chromo_info</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="3">
+<div class="cell-output cell-output-display" data-execution_count="17">
 <div>
 
 
@@ -455,7 +448,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h2 class="anchored" data-anchor-id="data-visualization">Data visualization</h2>
 <section id="chromosome-size" class="level3">
 <h3 class="anchored" data-anchor-id="chromosome-size">Chromosome size</h3>
-<div id="2534cf52" class="cell" data-execution_count="4">
+<div id="d2841667" class="cell" data-execution_count="4">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>sns.barplot(data <span class="op">=</span> chromo_info,</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>                x <span class="op">=</span> <span class="st">"chrom_len"</span>,</span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>                y <span class="op">=</span> <span class="st">"chrom_numeric"</span>,</span>
@@ -474,7 +467,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="how-much-of-human-genome-is-examined-by-23andme" class="level3">
 <h3 class="anchored" data-anchor-id="how-much-of-human-genome-is-examined-by-23andme">How much of human genome is examined by 23andMe?</h3>
 <p>Calculations</p>
-<div id="f8590a1d" class="cell" data-execution_count="5">
+<div id="6cbfdad9" class="cell" data-execution_count="5">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>total <span class="op">=</span> chromo_len_ser.<span class="bu">sum</span>()</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>snps_23_and_me <span class="op">=</span> <span class="dv">929045</span> <span class="co"># from 1117.23andme.txt</span></span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>other <span class="op">=</span> total <span class="op">-</span>snps_23_and_me</span>
@@ -485,7 +478,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 <p>Piegraph</p>
-<div id="f5d1b7c9" class="cell" data-execution_count="6">
+<div id="3888e4a2" class="cell" data-execution_count="6">
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>plt.close()</span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>plt.pie([snps_23_and_me,other],</span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a> labels<span class="op">=</span>[<span class="st">"23andme</span><span class="ch">\n</span><span class="st">Positions"</span>,<span class="st">"Rest of</span><span class="ch">\n</span><span class="st">genome"</span>]) <span class="op">;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -498,13 +491,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 <p>How much of our genome is examined in research-grade datasets?</p>
-<div id="2b4bf6bd" class="cell" data-execution_count="7">
+<div id="bbd01f52" class="cell" data-execution_count="7">
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>genomes1k <span class="op">=</span> <span class="dv">125484020</span> <span class="co"># Byrska-Bishop et al 2022</span></span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>other <span class="op">=</span> total <span class="op">-</span>genomes1k</span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>snps_1kgpercent <span class="op">=</span> genomes1k<span class="op">/</span>total<span class="op">*</span><span class="dv">100</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Pie graph</p>
-<div id="3ee57b64" class="cell" data-execution_count="8">
+<div id="7230cdca" class="cell" data-execution_count="8">
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>plt.close()</span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>plt.pie([genomes1k,other],</span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a> labels<span class="op">=</span>[<span class="st">"1000 Genomes</span><span class="ch">\n</span><span class="st">Project"</span>,<span class="st">"Rest of</span><span class="ch">\n</span><span class="st">genome"</span>]) <span class="op">;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -519,7 +512,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="chromosome-size-versus-amount-survey" class="level3">
 <h3 class="anchored" data-anchor-id="chromosome-size-versus-amount-survey">Chromosome size versus amount survey</h3>
-<div id="5dce0a17" class="cell" data-execution_count="9">
+<div id="a54b41c6" class="cell" data-execution_count="9">
 <div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>plt.close()</span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>bar1 <span class="op">=</span> sns.barplot(data <span class="op">=</span> chromo_info,</span>
 <span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> <span class="st">"chrom_len"</span>,</span>
@@ -548,7 +541,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="size-of-consumer-genomics-industry" class="level2">
 <h2 class="anchored" data-anchor-id="size-of-consumer-genomics-industry">Size of consumer genomics industry</h2>
 <p>TODO: data source</p>
-<div id="f1041a98" class="cell" data-execution_count="10">
+<div id="910123a3" class="cell" data-execution_count="10">
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>mil <span class="op">=</span> <span class="dv">1000000</span></span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>plt.close()</span>
 <span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>N <span class="op">=</span> [<span class="dv">25000000</span><span class="op">/</span>mil,<span class="dv">14000000</span><span class="op">/</span>mil,<span class="dv">8000000</span><span class="op">/</span>mil,<span class="dv">1628438</span><span class="op">/</span>mil,<span class="dv">300000</span><span class="op">/</span>mil]</span>
@@ -566,7 +559,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </div>
-<div id="6ac05288" class="cell" data-execution_count="11">
+<div id="a32725fb" class="cell" data-execution_count="11">
 <div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>plt.close()</span>
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="co"># library</span></span>
 <span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
@@ -584,7 +577,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </div>
-<div id="53e8c0bf" class="cell" data-execution_count="12">
+<div id="eaac7c6a" class="cell" data-execution_count="12">
 <div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>plt.close()</span>
 <span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> matplotlib_venn <span class="im">import</span> venn2</span>
 <span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>venn2(subsets <span class="op">=</span> (<span class="dv">3</span>, <span class="dv">2</span>, <span class="dv">1</span>))</span>
@@ -597,7 +590,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </div>
-<div id="be1a6c6a" class="cell" data-execution_count="13">
+<div id="e6118b40" class="cell" data-execution_count="13">
 <div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>plt.close()</span>
 <span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> matplotlib_venn <span class="im">import</span> venn3</span>
 <span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>venn3(subsets <span class="op">=</span> (<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">72000</span>,  <span class="co"># 1, 2, 1 vs 2</span></span>
@@ -613,7 +606,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </div>
-<div id="4c46bac4" class="cell" data-execution_count="14">
+<div id="6d958ff9" class="cell" data-execution_count="14">
 <div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>plt.close()</span>
 <span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> matplotlib <span class="im">import</span> pyplot <span class="im">as</span> plt</span>
 <span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
