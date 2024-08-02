@@ -48,7 +48,7 @@ chromo_len_ser    = pd.Series(chromo_len)
 ## additional info
 snps_approx = chromo_len_ser*0.04
 #chromo_type = ["Autosome","Sex","Organelle"]
-#chromo_type = np.repeat(chrom_type, [22,2,1], axis=0)
+#chromo_type = np.repeat(chromo_type, [22,2,1], axis=0)
 #chromo_type_ser = pd.Series(chromo_type)
 
 ## build pandas dataframe
@@ -151,63 +151,3 @@ df = pd.DataFrame({"DNA tests (millions)": N,
 sns.barplot(data = df,y = "DNA tests (millions)", x = "Company")
 ```
 
-
-
-```{python}
-plt.close()
-# library
-import matplotlib.pyplot as plt
-from matplotlib_venn import venn2
-# 949904
-# 246554
-# Use the venn2 function
-venn2(subsets = (950000-250000-72000, 250000-72000, 72000), set_labels = ('23andMe', 'Xing et al. 2010'))
-plt.show()
-```
-
-```{python}
-plt.close()
-from matplotlib_venn import venn2
-venn2(subsets = (3, 2, 1))
-plt.show()
-```
-
-```{python}
-plt.close()
-from matplotlib_venn import venn3
-venn3(subsets = (0, 0, 72000,  # 1, 2, 1 vs 2
-                 125000000-950000-250000-72000, 950000-72000, 250000-72000,  # 3, 3 vs 1, 3 vs 2
-                 72000),       # all shared
-                 set_labels = ('Set1', 'Set2', 'Set3'))
-plt.show()
-```
-
-
-```{python}
-plt.close()
-from matplotlib import pyplot as plt
-import numpy as np
-from matplotlib_venn import venn3, venn3_circles
-plt.figure(figsize=(4,4))
-v = venn3(subsets=(125000000, 950000, 250000, 
-                   950000, 250000, 1, 
-                   1), 
-          set_labels = ('A', 'B', 'C'))
-v.get_patch_by_id('100').set_alpha(1.0)
-v.get_patch_by_id('100').set_color('white')
-v.get_label_by_id('100').set_text('Unknown')
-v.get_label_by_id('A').set_text('Set "A"')
-c = venn3_circles(subsets=(1, 1, 1, 1, 1, 1, 1), linestyle='dashed')
-c[0].set_lw(1.0)
-c[0].set_ls('dotted')
-plt.title("Sample Venn diagram")
-plt.annotate('Unknown set', xy=v.get_label_by_id('100').get_position() - np.array([0, 0.05]), xytext=(-70,-70),
-             ha='center', textcoords='offset points', bbox=dict(boxstyle='round,pad=0.5', fc='gray', alpha=0.1),
-             arrowprops=dict(arrowstyle='->', connectionstyle='arc3,rad=0.5',color='gray'))
-plt.show()
-```
-
-
-```{python}
-
-```

@@ -1,0 +1,292 @@
+{
+  "cells": [
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "---\n",
+        "title: \"Tutorial: How big is a genome? Exploring size and scope of the human genome in Python\"\n",
+        "format: html\n",
+        "---\n",
+        "\n",
+        "\n",
+        "\n",
+        "\n",
+        "## Introduction \n",
+        "\n",
+        "This tutorial uses basic libraries in Python to explore how big the human genome is and the volume of data generate when we submit a sample to a genetic testing service like 23andMe.\n",
+        "\n",
+        "## Preliminaries\n",
+        "\n",
+        "### Libraries\n",
+        "\n",
+        "We'll use standard Python data science libraries in this tutorial, including pandas, seaborn, and numpy.\n"
+      ],
+      "id": "20c2b013"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "import pandas as pd\n",
+        "import seaborn as sns\n",
+        "import numpy as np\n",
+        "import matplotlib.pyplot as plt\n",
+        "import matplotlib.patches as mpatches"
+      ],
+      "id": "72be4814",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "### Data\n",
+        "\n",
+        "The main dataset in this tutorial is a table of chromosome lengths from the [NCBI](https://www.ncbi.nlm.nih.gov/grc/human/data?asm=GRCh37).\n",
+        "\n",
+        "This is a small dataset, so we can quickly build a pandas dataframe from the data:\n"
+      ],
+      "id": "b361a789"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "#| echo: true\n",
+        "# raw data lists\n",
+        "chromo_numeric = [1,2,3,4,5,6,7,8,9,10,\n",
+        "                  11,12,13,14,15,16,17,\n",
+        "                  18,19,20,21,22,23,24,25]\n",
+        "chromo_str = [\"1\",\"2\",\"3\",\"4\",\"5\",\"6\",\"7\",\"8\",\"9\",\"10\",\n",
+        "                  \"11\",\"12\",\"13\",\"14\",\"15\",\"16\",\"17\",\n",
+        "                  \"18\",\"19\",\"20\",\"21\",\"22\",\"X\",\"Y\",\"Mito\"]\n",
+        "chromo_len = [249250621,243199373,198022430,191154276,180915260,\n",
+        "                171115067,159138663,146364022,141213431,135534747,135006516,\n",
+        "                133851895,115169878,107349540,102531392,90354753,81195210,78077248,59128983,\n",
+        "                63025520,48129895,51304566,155270560,59373566,16569]\n",
+        "\n",
+        "# convert to series\n",
+        "chromo_numeric_ser = pd.Series(chromo_numeric)\n",
+        "chromo_str_ser = pd.Series(chromo_str)\n",
+        "chromo_len_ser    = pd.Series(chromo_len)\n",
+        "\n",
+        "## additional info\n",
+        "snps_approx = chromo_len_ser*0.04\n",
+        "#chromo_type = [\"Autosome\",\"Sex\",\"Organelle\"]\n",
+        "#chromo_type = np.repeat(chromo_type, [22,2,1], axis=0)\n",
+        "#chromo_type_ser = pd.Series(chromo_type)\n",
+        "\n",
+        "## build pandas dataframe\n",
+        "chromo_info = pd.DataFrame({\"chrom_numeric\": chromo_numeric_ser,\n",
+        "                           \"chromo_str\": chromo_str_ser,\n",
+        "                           #\"chrom_type\": chromo_type_ser,\n",
+        "                           \"chrom_len\":   chromo_len_ser,\n",
+        "                           \"snps_approx\": snps_approx})"
+      ],
+      "id": "3600005e",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "The assembled data looks like this:\n"
+      ],
+      "id": "e3c324c5"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "#| echo: true\n",
+        "chromo_info"
+      ],
+      "id": "cc4b4bc7",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "## Data visualization\n",
+        "\n",
+        "### Chromosome size\n"
+      ],
+      "id": "b4ec2bd1"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "sns.barplot(data = chromo_info,\n",
+        "                x = \"chrom_len\",\n",
+        "                y = \"chrom_numeric\",\n",
+        "                orient = 'h'#,\n",
+        "                #hue = \"chrom_type\"\n",
+        "                );"
+      ],
+      "id": "f7d615da",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "### How much of human genome is examined by 23andMe?\n",
+        "\n",
+        "\n",
+        "Calculations\n"
+      ],
+      "id": "35c748d4"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "total = chromo_len_ser.sum()\n",
+        "snps_23_and_me = 929045 # from 1117.23andme.txt\n",
+        "other = total -snps_23_and_me\n",
+        "snps_percent = snps_23_and_me/total*100\n",
+        "print(\"Approximately\", round(snps_percent,3), \"percent of our genome is represented in data from 23andMe\")"
+      ],
+      "id": "c3a7ba44",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "Piegraph\n"
+      ],
+      "id": "a111649d"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "plt.close()\n",
+        "plt.pie([snps_23_and_me,other],\n",
+        " labels=[\"23andme\\nPositions\",\"Rest of\\ngenome\"]) ;"
+      ],
+      "id": "2b607da6",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "How much of our genome is examined in research-grade datasets?\n"
+      ],
+      "id": "df70e5ad"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "genomes1k = 125484020 # Byrska-Bishop et al 2022\n",
+        "other = total -genomes1k\n",
+        "snps_1kgpercent = genomes1k/total*100"
+      ],
+      "id": "f74ff655",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "Pie graph\n"
+      ],
+      "id": "bf1cab65"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "plt.close()\n",
+        "plt.pie([genomes1k,other],\n",
+        " labels=[\"1000 Genomes\\nProject\",\"Rest of\\ngenome\"]) ;"
+      ],
+      "id": "ee0229e9",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "### Chromosome size versus amount survey\n"
+      ],
+      "id": "8b6cd55a"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "plt.close()\n",
+        "bar1 = sns.barplot(data = chromo_info,\n",
+        "x = \"chrom_len\",\n",
+        "y = \"chrom_numeric\",\n",
+        "orient = 'h'#,\n",
+        "    #hue = \"chrom_type\"\n",
+        "    );\n",
+        "\n",
+        "bar2 = sns.barplot(x=\"snps_approx\", y=\"chrom_numeric\", data = chromo_info,color='lightblue',orient = 'h');\n",
+        "\n",
+        "top_bar = mpatches.Patch(color='darkblue', label='x')\n",
+        "bottom_bar = mpatches.Patch(color='lightblue', label='y')\n",
+        "\n",
+        "\n",
+        "plt.show()"
+      ],
+      "id": "da7c3198",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "## Size of consumer genomics industry\n",
+        "\n",
+        "TODO: data source\n"
+      ],
+      "id": "0823e3a4"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "mil = 1000000\n",
+        "plt.close()\n",
+        "N = [25000000/mil,14000000/mil,8000000/mil,1628438/mil,300000/mil]\n",
+        "company = [\"Ancestry.com\",\"23andMe\",\"MyHeritage\",\"Family Tree DNA\\nFamily Finder\",\"Living DNA\"]\n",
+        "\n",
+        "df = pd.DataFrame({\"DNA tests (millions)\": N,\n",
+        "                    \"Company\": company})\n",
+        "\n",
+        "sns.barplot(data = df,y = \"DNA tests (millions)\", x = \"Company\")"
+      ],
+      "id": "a4dffe2b",
+      "execution_count": null,
+      "outputs": []
+    }
+  ],
+  "metadata": {
+    "kernelspec": {
+      "name": "python3",
+      "language": "python",
+      "display_name": "Python 3 (ipykernel)",
+      "path": "C:\\ProgramData\\jupyter\\kernels\\python3"
+    }
+  },
+  "nbformat": 4,
+  "nbformat_minor": 5
+}
