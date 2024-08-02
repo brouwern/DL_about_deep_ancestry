@@ -20,40 +20,6 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
-/* CSS for syntax highlighting */
-pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { line-height: 1.25; }
-pre > code.sourceCode > span:empty { height: 1.2em; }
-.sourceCode { overflow: visible; }
-code.sourceCode > span { color: inherit; text-decoration: inherit; }
-div.sourceCode { margin: 1em 0; }
-pre.sourceCode { margin: 0; }
-@media screen {
-div.sourceCode { overflow: auto; }
-}
-@media print {
-pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
-}
-pre.numberSource code
-  { counter-reset: source-line 0; }
-pre.numberSource code > span
-  { position: relative; left: -4em; counter-increment: source-line; }
-pre.numberSource code > span > a:first-child::before
-  { content: counter(source-line);
-    position: relative; left: -1em; text-align: right; vertical-align: baseline;
-    border: none; display: inline-block;
-    -webkit-touch-callout: none; -webkit-user-select: none;
-    -khtml-user-select: none; -moz-user-select: none;
-    -ms-user-select: none; user-select: none;
-    padding: 0 4px; width: 4em;
-  }
-pre.numberSource { margin-left: 3em;  padding-left: 4px; }
-div.sourceCode
-  {   }
-@media screen {
-pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
-}
 </style>
 
 
@@ -149,8 +115,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#genetic-testing-services-use-a-combination-of-advanced-dna-sequencing-and-machine-learning-to-characterize-a-persons-deep-heritage" id="toc-genetic-testing-services-use-a-combination-of-advanced-dna-sequencing-and-machine-learning-to-characterize-a-persons-deep-heritage" class="nav-link active" data-scroll-target="#genetic-testing-services-use-a-combination-of-advanced-dna-sequencing-and-machine-learning-to-characterize-a-persons-deep-heritage">Genetic testing services use a combination of advanced DNA sequencing and machine learning to characterize a person’s deep heritage</a></li>
-  <li><a href="#consumer-genomics-data" id="toc-consumer-genomics-data" class="nav-link" data-scroll-target="#consumer-genomics-data">🧬 Consumer genomics data</a></li>
+  <li><a href="#consumer-genomics-data" id="toc-consumer-genomics-data" class="nav-link active" data-scroll-target="#consumer-genomics-data">🧬 Consumer genomics data</a></li>
   <li><a href="#population-genomics-data" id="toc-population-genomics-data" class="nav-link" data-scroll-target="#population-genomics-data">🌍 Population genomics data</a></li>
   <li><a href="#machine-learning-and-genomics" id="toc-machine-learning-and-genomics" class="nav-link" data-scroll-target="#machine-learning-and-genomics">🤖 Machine learning and genomics</a>
   <ul class="collapse">
@@ -185,21 +150,21 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 
 <p><strong>Nathan L. Brouwer, PhD</strong></p>
-<section id="genetic-testing-services-use-a-combination-of-advanced-dna-sequencing-and-machine-learning-to-characterize-a-persons-deep-heritage" class="level2">
-<h2 class="anchored" data-anchor-id="genetic-testing-services-use-a-combination-of-advanced-dna-sequencing-and-machine-learning-to-characterize-a-persons-deep-heritage">Genetic testing services use a combination of advanced DNA sequencing and machine learning to characterize a person’s deep heritage</h2>
+<section id="genetic-testing-services-use-a-combination-of-advanced-dna-sequencing-and-machine-learning-to-characterize-a-persons-deep-heritage" class="level4">
+<h4 class="anchored" data-anchor-id="genetic-testing-services-use-a-combination-of-advanced-dna-sequencing-and-machine-learning-to-characterize-a-persons-deep-heritage">Genetic testing services use a combination of advanced DNA sequencing and machine learning to characterize a person’s deep heritage</h4>
 <p>In the last 20 years, using DNA to charaterize people’s ancestry has become a <a href="https://www.alumni.hbs.edu/stories/Pages/story-impact.aspx?num=9253">multi-billion dollar industry</a>, with millions of American’s having had their genomes sequenced by ancestry services like 23andMe and Ancestry.com. People now routinely contemplate results like those in the table below, with their family’s history rendered with apparent mathematical precision. But how exactly can a small sample of cells in a test-tube be converted to numbers that somehow represent people’s heritage, ancestry, and parentage?</p>
-<div id="a8a4d477" class="cell" data-execution_count="2">
+<div id="dd6eee92" class="cell" data-execution_count="3">
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="index_files/figure-html/cell-3-output-1.png" width="651" height="449" class="figure-img"></p>
-<figcaption>Sample predictions of geographic ancestry</figcaption>
+<p><img src="index_files/figure-html/cell-4-output-1.png" width="651" height="449" class="figure-img"></p>
+<figcaption><strong>Example predictions of geographic ancestry.</strong> Predictions were made with a multi-class random forests classifier in scikit-learn.</figcaption>
 </figure>
 </div>
 </div>
 </div>
 <p>The technology that makes modern genomic ancestry assessment possible is a combination from multiple fields, including advanced DNA sequencing, genome science, and machine learning. While you can’t sequence your own genome (yet), it takes only a moderate amount of computer programming skills and some open-access data to see how companies like 23andMe and Ancestry.com do their magic.</p>
-<p>In this article I will Python to</p>
+<p>In this article I will use Python to</p>
 <ol type="1">
 <li>🧬 Briefly explains what <strong>raw genomic testing data</strong> looks like</li>
 <li>🌍 Introduce the types of <strong>population-scale genome data</strong> needed to understand human ancestry</li>
@@ -211,8 +176,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="consumer-genomics-data" class="level2">
 <h2 class="anchored" data-anchor-id="consumer-genomics-data">🧬 Consumer genomics data</h2>
 <p>Direct-to-consumer genomic testing services typically provide a thorough set of results, as well as access to your own raw data. While the reports provided by companies can be <a href="https://customercare.23andme.com/hc/en-us/articles/5328923468183-Understanding-The-Difference-Between-Your-Ancestry-Percentages-Your-Country-Matches-and-Your-Genetic-Groups">very flashy</a>, the raw data for a single person is rather under-whelming, as we can see when its loaded into Python:</p>
-<div id="29696caa" class="cell" data-execution_count="3">
-<div class="cell-output cell-output-display" data-execution_count="17">
+<div id="26ff612f" class="cell" data-execution_count="4">
+<div class="cell-output cell-output-display" data-execution_count="4">
 <div>
 
 
@@ -255,23 +220,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 <p>This small snapshot of data is froom 23andMe, but is similar to genomic data from other services as well as that produced by researchers. Each row of these data represent a position in the human genomes where people frequently vary from each other, with the <strong>genotype</strong> indicating what the sequence is for the person’s DNA being examined. Two letters are shown, one for each of the person’s parents. “CC” in the top row means that for this place in the genome, the person recieved a “C” DNA base from both parents. In contrast, the “AGs” on the third row indicates that they inherited an “A” DNA base from one parent and a “G” from the other. For any given row there are 3 possible combinations of letters that can occur in differnet people. For example, for the AG row, somewhere in the world there are poeple who are AA and others who are GG.</p>
-<div id="80778436" class="cell" data-execution_count="4">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co">#temp = pd.concat([genos4.iloc[:,0],continents], axis = 1)</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co">#temp.rs6680471[temp.rs6680471 == temp.rs6680471.min()] = 0</span></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co">#temp.rs6680471[temp.rs6680471 == temp.rs6680471.max()] = 2</span></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="co">#temp.rs6680471[temp.rs6680471.round(2) == 0.64] = 1</span></span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="co">#temp.value_counts()</span></span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="co">#pd.pivot_table(temp, </span></span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="co">#               index = "Continental Group", </span></span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="co">#               values = "rs6680471",</span></span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="co">#               columns = "rs6680471",</span></span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="co">#               aggfunc = "sum")</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
 <p>To carry out genomic analyses, these data have to be converted to numbers. For our analysis, we’ll use a simple number system where each of the three combinations that can occur on a row are coded 0, 1 or 2. In the case of the AG rows, “AG” would be coded as an intermediate value of 1, while AA and GG would be coded as 0 and 2. This results in our snapshot of data looking like this:</p>
-<div id="ba9d2b6f" class="cell" data-execution_count="5">
-<div class="cell-output cell-output-display" data-execution_count="19">
+<div id="c12357b0" class="cell" data-execution_count="6">
+<div class="cell-output cell-output-display" data-execution_count="6">
 <div>
 
 
@@ -320,8 +271,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>In order to characterize someone’s ancestry we must have a database of many people from around the world to compare them too. While consumer genomics companies have compiled their extensive but proprietery databases, there are also open-access datasets available for anyone to use. The largest public database is the <a href="https://en.wikipedia.org/wiki/1000_Genomes_Project">1000 Genomes Project (1KGP)</a>, which contains genomic information on ~2500 people from 25 populations around the world. 1KGP data has been used in hundreds of scientific papers and can be accessed freely by anyone.</p>
 <p>Unfortunately, 1KGP data is a bit unwieldly to access without specialized software; luckily, subsets of the data have been posted by some researchers. In this artile, I’ll use <a href="https://jorde.genetics.utah.edu/published-data/">data</a> provided by researchers from the University of Utah. This study, led by <a href="https://xinglab.genetics.rutgers.edu/people/jinchuan-xing/">Jinchuan Xing</a> and <a href="https://jorde.genetics.utah.edu/">Lynn Jorde</a>, integrated data from the 1000 Genomes Project with data from Jorde’s lab, resulting in a database of genomic data with 850 people from 40 different populations. For each person in the dataset, they had genomic data similar to that shown above from 23andMe.</p>
 <p>After being prepared for analysis, the data from 5 people for 5 places in their genomes would look like the table below. Each person is in a column, and each row contains a number representing their original DNA sequence. In total, Xing and Jorde’s study. If two people have many of the same values accross the rows, then they are possiblly from the same or similar populations.</p>
-<div id="f162356b" class="cell" data-execution_count="6">
-<div class="cell-output cell-output-display" data-execution_count="20">
+<div id="631d3024" class="cell" data-execution_count="7">
+<div class="cell-output cell-output-display" data-execution_count="7">
 <div>
 
 
@@ -386,7 +337,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="machine-learning-and-genomics" class="level2">
 <h2 class="anchored" data-anchor-id="machine-learning-and-genomics">🤖 Machine learning and genomics</h2>
-<p>Most machine learning models have applications in population genomics, including dimension reduction, clustering, and supervised classification. While the methods used by consumer genomics companies and researchers are complex and tailored to the complexities of genomic data, we can use “off-the-shelf” tools from data science and machine learning to understand how more advanced models reach their conclusions.</p>
+<p>Most machine learning models have applications in population genomics, including dimension reduction, clustering, and supervised classification. Biologists interested in human evolutionar are particularly exploring how Deep Learning methods can reveal insights into human history. While the methods used by consumer genomics companies and researchers are complex and tailored to the complexities of genomic data, we can use “off-the-shelf” tools from data science and machine learning to understand how more advanced models reach their conclusions.</p>
 <p>Regardless of methods, we face two challenges when analyzing genomic data. First, there’s typically lots of data, with information on hundreds of peole from thousands of places in the genome. Second, each place in the genome serves as a feature (aka variable) of our analysis. In the previous table there were 5 rows and therefore 5 locations in the genome represented. The full dataset has over 10,000 rows.</p>
 <section id="going-the-distance-with-dna" class="level3">
 <h3 class="anchored" data-anchor-id="going-the-distance-with-dna">Going the distance with DNA</h3>
@@ -394,8 +345,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>The table below uses this logic to represent the average genetic distance between indvidiauls in major continental groups in Xing and Jorde’s dataset. First, the average genetic location of people from each continent is determined, and then the distnance between these mean locations calculate.</p>
 <p>The largest value in the table is 107 in the Africa-Indigenous Americans rows and columns. The populations of these continents are geographically most distant, and genetically they are, relatively speaking, least similar or “most distant.” (It is very important add the caveat “relatively” because two humans are typically 98% the same in terms of DNA, and these numers focus only on the infrequent genetic differenes).</p>
 <p>The smallest value on the table is 52, between Europe and Asia. These two continents are geographically contiguous with each other and their populations have remained the most genetically similar (least distant) depsite lignuistic and cultural change.</p>
-<div id="535884c3" class="cell" data-execution_count="9">
-<div class="cell-output cell-output-display" data-execution_count="23">
+<div id="bfbf86c1" class="cell" data-execution_count="10">
+<div class="cell-output cell-output-display" data-execution_count="10">
 <div>
 
 
@@ -452,8 +403,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 <p>Once we have characterized the similarities and differences between populations, we can take an individual person’s DNA sample and compare it to the average locations of each continent. I did this for the DNA sample I introduced at the beginning of this article, and the smallest value is for Europe. This indicats that they are least distant and therefore most similar to the other people in the dataset from this continent.</p>
-<div id="af4df3d1" class="cell" data-execution_count="10">
-<div class="cell-output cell-output-display" data-execution_count="24">
+<div id="90607ca6" class="cell" data-execution_count="11">
+<div class="cell-output cell-output-display" data-execution_count="11">
 <div>
 
 
@@ -496,11 +447,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h3 class="anchored" data-anchor-id="a-picture-is-worth-10000-genome-locations">A picture is worth 10,000 genome locations</h3>
 <p>Because it has so many features, genomic data cannot be plotted using standard tools like scatterplots. Once we have a table of genetic distances, though, we can make a plot using the results of a process called NMDS (Non-metric Multi-Dimensonal Scaling).</p>
 <p>NMDS turns a distance matrix into a set of x-y coordinates that preserves the relative distances between all sets of points. In the plots</p>
-<div id="b27e68ab" class="cell" data-execution_count="11">
+<div id="38795faa" class="cell" data-execution_count="13">
 <div class="cell-output cell-output-display">
-<div>
+<div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="index_files/figure-html/cell-12-output-1.png" width="604" height="431" class="figure-img"></p>
+<p><img src="index_files/figure-html/cell-14-output-1.png" width="604" height="431" class="figure-img"></p>
+<figcaption><strong>Relative genetic distances between populations from major continents.</strong> Non-metri multi-dimensional scaling was carried out on a matrix of Euclidean distances</figcaption>
 </figure>
 </div>
 </div>
@@ -509,11 +461,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>In the case of genomic data, information on individual DNA samples enters into the PCA and the lower dimensional data is then plotted. Dat points represent individuals people in the sample, and the points are color-coded based on the geographic location where the individuals are from. This allows PCA to serve as both a visualization and clustering approach.</p>
 <p>Additionally, someone whose ancestry is not known or uncertain can have their data transformed by the PCA and plotted along with the other points. The location of the prediction relative to other data points indicates genetic similarity and potentially similar ancestry.</p>
 <p>The figure below shows data from Xing and Jorde study discussed above after it has been processed through PCA. The data are color-coded by the large-scale geographic areas the samples are derived from. I then took a <a href="https://github.com/mvolz/osgen/tree/master/sample%20genomes">23andMe record</a> for a person with unknown ancestry and used my PCA model to estimate which samples from Xing this person is most similar to. Based on their location, they are most likely predominantly European ancestry.</p>
-<div id="b744cd88" class="cell" data-execution_count="13">
+<div id="a7f505a5" class="cell" data-execution_count="15">
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="index_files/figure-html/cell-14-output-1.png" width="617" height="449" class="figure-img"></p>
+<p><img src="index_files/figure-html/cell-16-output-1.png" width="617" height="449" class="figure-img"></p>
 <figcaption>Principal Components Analysis (PCA) biplot showing the location (X) of a sample with uncertain ancestry. Based on its location, it can be inferred that this person is likely to be of predominantly European ancestry.</figcaption>
 </figure>
 </div>
@@ -524,11 +476,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="ancestry-predictions" class="level2">
 <h2 class="anchored" data-anchor-id="ancestry-predictions">📊 Ancestry predictions</h2>
 <p>PCA biplots are ubiquitous in scientific papers on population genomics and ancestry, often as a central figure. Consumer genetic companies, however, typically focus their results on assignment to one or more ancestry categories. We can carry out a similar assignment, known technically a multi-class classification, using standard tools in Python. In this Analysis, used a Random-forests classifier to gauge the relative probability that the person’ whose DNA sequence we’ve been working with fit into 1 of 7 possible geographic groups.</p>
-<div id="f2851e56" class="cell" data-execution_count="14">
+<div id="3ed68639" class="cell" data-execution_count="16">
 <div class="cell-output cell-output-display">
-<div>
+<div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="index_files/figure-html/cell-15-output-1.png" width="648" height="449" class="figure-img"></p>
+<p><img src="index_files/figure-html/cell-17-output-1.png" width="648" height="449" class="figure-img"></p>
+<figcaption><strong>Examples predictions of geographic ancestry.</strong> Predictions were made with a multi-class random forests classifier in scikit-learn.</figcaption>
 </figure>
 </div>
 </div>

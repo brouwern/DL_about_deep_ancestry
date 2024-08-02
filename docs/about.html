@@ -107,8 +107,15 @@ ul.task-list li input[type="checkbox"] {
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
-        
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#data-sources" id="toc-data-sources" class="nav-link active" data-scroll-target="#data-sources">Data Sources</a></li>
+  <li><a href="#previous-presentations" id="toc-previous-presentations" class="nav-link" data-scroll-target="#previous-presentations">Previous presentations</a></li>
+  </ul>
+</nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
@@ -133,16 +140,19 @@ ul.task-list li input[type="checkbox"] {
 
 
 <p>Welcome to “Deep Learning about deep ancestry”. This website introduces you to the basics of how DNA sequences and machine learning can be used to characterize someone’s ancestry. The main landing page of the site contains a high-level overview, while additional sections of the site delve into how genomic data is processed and the machine learning algorithms use.</p>
-<p>This material is based on material from a course I taught at the University of Pittsburgh and a presentation at <a href="https://www.pyohio.org/2024/program/talks/23-python-and-me-using-machine-learning-in-python-to-analyze/">PyOhio 2024</a>. The main dataset used is from Xing et al.&nbsp;2010, “<a href="https://www.sciencedirect.com/science/article/pii/S0888754310001552">Toward a more uniform sampling of human genetic diversity: a survey of worldwide populations by high-density genotyping</a>”.</p>
-<p>If you have any questions, please contact me at brouwern at gmail.com or message me on <a href="https://www.linkedin.com/in/nathan-brouwer-phd-97100980/">LinkedIn</a>.</p>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="pyohiologo.png" class="img-fluid figure-img" style="width:50.0%"></p>
-<figcaption>PyOhio</figcaption>
-</figure>
-</div>
+<section id="data-sources" class="level2">
+<h2 class="anchored" data-anchor-id="data-sources">Data Sources</h2>
+<p>These analyses rely on data from the <strong>1000 Genomes Project</strong> (1KGP). The data provided by the ~2500 volunteers from throughout the world to the project 1KGP has been foundational to population genomics. In these articles, I use 1KGP data that was augumented with additional samples by Xing, Jorde, and colleagues in their 2010 paper “<a href="https://www.sciencedirect.com/science/article/pii/S0888754310001552">Toward a more uniform sampling of human genetic diversity: a survey of worldwide populations by high-density genotyping</a>”, who have generously posted their <a href="https://jorde.genetics.utah.edu/published-data/">entire dataset</a> online.</p>
+<p><img src="1000genomes.jpg" class="img-fluid"></p>
+</section>
+<section id="previous-presentations" class="level2">
+<h2 class="anchored" data-anchor-id="previous-presentations">Previous presentations</h2>
+<p>These articles are based on material from a course I taught at the University of Pittsburgh from 2020 to 2023, and a presentation at <a href="https://www.pyohio.org/2024/program/talks/23-python-and-me-using-machine-learning-in-python-to-analyze/">PyOhio 2024</a>.</p>
+<p><img src="pyohiologo.png" class="img-fluid" style="width:50.0%"></p>
+<p>If you have any questions, please contact me at brouwern at gmail.com or message me on <a href="https://www.linkedin.com/in/nathan-brouwer-phd-97100980/">LinkedIn</a>. Code is available on <a href="https://github.com/brouwern/DL_about_deep_ancestry">GitHub</a>.</p>
 
 
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">

@@ -4,7 +4,7 @@ title: "Deep Learning about deep ancestry"
 
 **Nathan L. Brouwer, PhD**
 
-## Genetic testing services use a combination of advanced DNA sequencing and machine learning to characterize a person's deep heritage 
+#### Genetic testing services use a combination of advanced DNA sequencing and machine learning to characterize a person's deep heritage 
 
 ```{python}
 #| echo: false
@@ -54,7 +54,6 @@ In the last 20 years, using DNA to charaterize people's ancestry has become a [m
 
 ```{python}
 #| echo: false
-#| fig-cap: "Sample predictions of geographic ancestry"
 
 # random forests classifier
 clf = RandomForestClassifier(max_depth=2, random_state=0)
@@ -70,7 +69,12 @@ pred_probs = pd.DataFrame({"Populations":pd.Series(clf.classes_),
 # plt.close()
 pred_probs2 = pred_probs.sort_values("Probabilities",ascending = False).round(3)
 
-#plt.close()
+
+```
+
+```{python}
+#| echo: false
+#| fig-cap: "**Example predictions of geographic ancestry.**  Predictions were made with a multi-class random forests classifier in scikit-learn."
 ax = sns.barplot(data = pred_probs2,
 x = "Probabilities", y = "Populations", hue = "Populations");
 
@@ -80,7 +84,7 @@ ax.set(title='Continental ancestry based on genomic sequencing')
 
 The technology that makes modern genomic ancestry assessment possible is a combination from multiple fields, including advanced DNA sequencing, genome science, and machine learning.  While you can't sequence your own genome (yet), it takes only a moderate amount of computer programming skills and some open-access data to see how companies like 23andMe and Ancestry.com do their magic. 
 
-In this article I will Python to
+In this article I will use Python to
 
 1. 🧬 Briefly explains what **raw genomic testing data** looks like
 1. 🌍 Introduce the types of **population-scale genome data** needed to understand human ancestry
@@ -106,6 +110,7 @@ df23am.iloc[:3,]
 This small snapshot of data is froom 23andMe, but is similar to genomic data from other services as well as that produced by researchers.  Each row of these data represent a position in the human genomes where people frequently vary from each other, with the **genotype** indicating what the sequence is for the person's DNA being examined.  Two letters are shown, one for each of the person's parents.  "CC" in the top row means that for this place in the genome, the person recieved a "C" DNA base from both parents.  In contrast, the "AGs" on the third row indicates that they inherited an "A" DNA base from one parent and a "G" from the other.  For any given row there are 3 possible combinations of letters that can occur in differnet people. For example, for the AG row, somewhere in the world there are poeple who are AA and others who are GG.
 
 ```{python}
+#| echo: false
 #temp = pd.concat([genos4.iloc[:,0],continents], axis = 1)
 
 #temp.rs6680471[temp.rs6680471 == temp.rs6680471.min()] = 0
@@ -161,7 +166,7 @@ temp.round(1)
 
 ## 🤖 Machine learning and genomics
 
-Most machine learning models have applications in population genomics, including dimension reduction, clustering, and supervised classification. While the methods used by consumer genomics companies and researchers are complex and tailored to the complexities of genomic data, we can use "off-the-shelf" tools from data science and machine learning to understand how more advanced models reach their conclusions.
+Most machine learning models have applications in population genomics, including dimension reduction, clustering, and supervised classification. Biologists interested in human evolutionar are particularly exploring how Deep Learning methods can reveal insights into human history. While the methods used by consumer genomics companies and researchers are complex and tailored to the complexities of genomic data, we can use "off-the-shelf" tools from data science and machine learning to understand how more advanced models reach their conclusions.
 
 Regardless of methods, we face two challenges when analyzing genomic data.  First, there's typically lots of data, with information on hundreds of peole from thousands of places in the genome.  Second, each place in the genome serves as a feature (aka variable) of our analysis.  In the previous table there were 5 rows and therefore 5 locations in the genome represented. The full dataset has over 10,000 rows.  
 
@@ -250,7 +255,15 @@ nmds = manifold.MDS(
 )
 npos = nmds.fit_transform(dist)
 
-plt.close()
+
+```
+
+
+
+```{python}
+#| echo: false
+#| fig-cap: "**Relative genetic distances between populations from major continents.**  Non-metri multi-dimensional scaling was carried out on a matrix of Euclidean distances"
+
 temp = pd.DataFrame(npos, columns=["X","Y"], index = dist.index)
 ax = sns.scatterplot(data = temp, 
                   y = "Y", x = "X", s = 100,
@@ -349,7 +362,7 @@ PCA biplots are ubiquitous in scientific papers on population genomics and ances
 
 ```{python}
 #| echo: false
-#| 
+#| fig-cap: "**Examples predictions of geographic ancestry.**  Predictions were made with a multi-class random forests classifier in scikit-learn."
 
 # random forests classifier
 clf = RandomForestClassifier(max_depth=2, random_state=0)
