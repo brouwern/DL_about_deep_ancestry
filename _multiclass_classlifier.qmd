@@ -1,0 +1,65 @@
+---
+title: "Predicting geographic origin"
+format: html
+---
+
+
+
+```{python}
+#| echo: false
+
+
+## Preliminaries
+### libraries
+import pandas as pd
+from sklearn import decomposition
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.datasets import make_classification
+
+### load and prepare data
+#### load population data
+inds    = pd.read_csv("JHS_Ind.csv",index_col="UID")  
+
+# NOTE: this file is large and so get in a different directory
+genos4  = pd.read_csv("C:\\Users\\nlb24\OneDrive - University of Pittsburgh\\Desktop\\portfolio\\_23am_Xing_012_coded_noNA_scaled.csv")
+genos4  = genos4.rename(columns = {'Unnamed: 0': "UID"})
+genos4  = genos4.set_index("UID")
+genos4 = genos4.reindex(inds.index)
+
+#### load unknown individual data
+df_23am_Xing_subset2 = pd.read_csv("23am_Xing_subset_with_scaled_feat.csv")
+df_23am_Xing_subset2 = df_23am_Xing_subset2.set_index("rsid")
+
+### setup individual data
+X_23am = pd.DataFrame(df_23am_Xing_subset2.scaled_value)
+X_23am = X_23am.T[X_pca.columns]
+```
+
+
+```{python}
+#| echo: false
+#| 
+
+# random forests classifier
+clf = RandomForestClassifier(max_depth=2, random_state=0)
+clf.fit(genos4, inds["Continental Group"])
+clf.predict(X_23am)
+
+#clf.classes_
+
+pred_probs = pd.DataFrame({"Populations":pd.Series(clf.classes_),
+"Probabilities":pd.Series(clf.predict_proba(X_23am)[0])})
+
+
+# plt.close()
+pred_probs2 = pred_probs.sort_values("Probabilities",ascending = False).round(3)
+
+#plt.close()
+sns.barplot(data = pred_probs2,
+x = "Probabilities", y = "Populations");
+
+```

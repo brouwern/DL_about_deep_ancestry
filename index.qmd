@@ -1,64 +1,10 @@
 ---
-title: "Deep Learning about deep ancestry: Demonstrating how genetic testing services can predict your heritage from your DNA"
+title: "Deep Learning about deep ancestry"
 ---
 
-In the last 20 years, using DNA to charaterize people's ancestry has become a [multi-billion dollar industry](https://www.alumni.hbs.edu/stories/Pages/story-impact.aspx?num=9253).  But how can a small sample of cells in a test-tube be used to determine things about people's heritage, ancestry, and parentage? 
+**Nathan L. Brouwer, PhD**
 
-The technology that makes modern genomic ancestry assessment possible is a combination from multiple fields: advanced DNA sequencing, genome science, and machine learning.  While you can't sequence your own genome (yet), it takes only a moderate amount of computer programming skills and some open-access data to see how companies like 23andMe and Ancestry.com do their magic. 
-
-This webpage
-
-1. Briefly explains what **raw genomic testing data** looks like
-1. Introduces the types of **population-scale genome data** needed to understand ancestry
-1. Gives an overview of **machine learning models** used in genomics
-1. Shows how a person's ancestry can be predicted using a machine-learning model
-
-For background information on how the data are processed, the models built, and ancestry predicted, see the other parts of this webpage.
-
-## Consumer genomics data
-
-Direct-to-consumer genomic testing services typically provide a thorough set of results, as well as access to your own raw data.  While the results create by companies can be [very flashy](https://customercare.23andme.com/hc/en-us/articles/5328923468183-Understanding-The-Difference-Between-Your-Ancestry-Percentages-Your-Country-Matches-and-Your-Genetic-Groups).  The raw data is rather under-whelming, as we can see when its loaded into Python:
-
-```{python}
-#| echo: false
-import pandas as pd
-df23am = pd.read_csv("sample_23andme.txt", 
-                        low_memory=False, 
-                        sep='\t', 
-                        skiprows = 14)    # skip 14 rows of meta data
-df23am.iloc[:3,]
-```
-
-This data is froom 23andMe, but is similar to genomic data from other services.  Each row of these data represent a position in the human genomes where people frequently vary from each other with  the **genotype** indicating what the sequence is for the person's DNA being examined.  Two letters are shown, one for each parent of the person.  "CC" in the top row means that for this place in the genome, the person recieved a "C" DNA base from both parents.  In contrast, the "AGs" on the rows below indicate that they inherited an "A" DNA base from one parent and a "G" from another.  For any given row there are 3 possible combinations of letter; for example, for the AG rows, somewhere in the world there are poeple who are AA and others who are GG.
-
-To carry out genomic analyses, these data have to be converted to numbers.  For our analysis, we'll use a simple number system where each of the three combinations that can occur on a row are coded 0, 1 or 2.  In the case of the AG rows, "AG" would be coded as an intermediate value of 1, while AA and GG would be coded as 0 and 2.  This results in data that looks like this:
-
-
-```{python}
-#| echo: false
-# Show preview of data
-temp = df23am.head().copy()
-temp.genotype = [2,0,1,1,1,]
-temp.iloc[:3,:]
-```
-
-An important to point out about genomic data is that it easily characterized as "big data".  For example, data from 23andMe for one person contains over 900,000 rows!  This may seem huge, but its actually less than 0.05% of the size of the human genome.
-
-## Population genomics data
-
-In order to characterize someones ancestry we must have a database of many people from around the world to compare them too.  While consumer genomics companies have compiled their extensive but proprietery databases, there are also open-access datasets available for anyone to use.  The largest public database is the [1000 Genomes Project (1KGP)](https://en.wikipedia.org/wiki/1000_Genomes_Project), which contains genomic information on ~2500 people from 25 countries around the world.  1KGP data has been used in hundreds of scientific papers and can be accessed freely by anyone.  
-
-Unfortunately, 1KGP data is a bit unwieldly to access without specialized software; luckily, subsets of the data have been posted by some researchers.  In this analysis, we'll use [data](https://jorde.genetics.utah.edu/published-data/) provided by researchers from the University of Utah.  This study, led by [Jinchuan Xing](https://xinglab.genetics.rutgers.edu/people/jinchuan-xing/) and working in the lab of [Lynn Jorde](https://jorde.genetics.utah.edu/), integrated data from the 1000 Genomes Project with their own data, resulting in a dataset with 850 people from 40 different populations.  For each person in the dataset, they had genomic data similar to that shown above from 23andMe.
-
-## Machine learning and genomics
-
-Most machine learning models have applications in ppulation genomics, including dimension reduction, clustering, and supervised classification. One of the most common tools used traditionally in population genomics is Principal Components Analysis (PCA).  PCA is an unsupervised machine learning method which allows high dimensonal data to be visualized in 2 or 3 dimensions.  PCA scatterplots with 2 dimensions are called **biplots**, and those with 3 dimensions are **tri-plots**.
-
-In the case of genomic data, information on samples DNA enters into the PCA and the lower dimensional data is then plotted.  Dat points represent individuals people in the sample, and the points are color-coded based on the geographic location where the individuals are from.  This allows PCA to serve as both a visualization and clustering approach.
-
-Additionally, someone whose ancestry it not known or uncertain can have their data transformed by the PCA and plotted along with the other points.  The location of the prediction relative to other data points indicates genetic similarity and potentially similar ancestry.
-
-The figure below shows data from Jinchuan Xing's study discussed above processed through PCA.  The data are color-coded by the large-scale geographic areas the samples are derived from.  I then took a [23andMe record](https://github.com/mvolz/osgen/tree/master/sample%20genomes) for a person with unknown ancestry and used the PCA model to estimate which samples form Xing this person is most similar to.  Based on their location, they are most likely predominantly European ancestry.
+## Genetic testing services use a combination of advanced DNA sequencing and machine learning to characterize a person's deep heritage 
 
 ```{python}
 #| echo: false
@@ -70,6 +16,11 @@ import pandas as pd
 from sklearn import decomposition
 import seaborn as sns
 import matplotlib.pyplot as plt
+import numpy as np
+
+
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.datasets import make_classification
 
 ### load and prepare data
 #### load population data
@@ -85,24 +36,249 @@ genos4 = genos4.reindex(inds.index)
 df_23am_Xing_subset2 = pd.read_csv("23am_Xing_subset_with_scaled_feat.csv")
 df_23am_Xing_subset2 = df_23am_Xing_subset2.set_index("rsid")
 
-## Final data prep
-### population data
-X_pca = genos4
-y_pca = inds.Population
-
-### individual data
+### setup individual data
 X_23am = pd.DataFrame(df_23am_Xing_subset2.scaled_value)
-X_23am = X_23am.T[X_pca.columns]
+X_23am = X_23am.T[genos4.columns]
+
+continents = inds["Continental Group"].copy()
+
+continents[continents == "West Asia"] = "Asia"
+continents[continents == "East Asia"] = "Asia"
+continents[continents == "Central Asia"] = "Asia"
+continents[continents == "Polynesia"] = "Asia"
+continents[continents == "America"] = "America\n(Indigenous)"
+```
+
+In the last 20 years, using DNA to charaterize people's ancestry has become a [multi-billion dollar industry](https://www.alumni.hbs.edu/stories/Pages/story-impact.aspx?num=9253), with millions of American's having had their genomes sequenced by ancestry services like 23andMe and Ancestry.com. People now routinely contemplate results like those in the table below, with their family's history rendered with apparent mathematical precision.  But how exactly can a small sample of cells in a test-tube be converted to numbers that somehow represent people's heritage, ancestry, and parentage? 
 
 
+```{python}
+#| echo: false
+#| fig-cap: "Sample predictions of geographic ancestry"
+
+# random forests classifier
+clf = RandomForestClassifier(max_depth=2, random_state=0)
+clf.fit(genos4, continents)
+clf.predict(X_23am)
+
+#clf.classes_
+
+pred_probs = pd.DataFrame({"Populations":pd.Series(clf.classes_),
+"Probabilities":pd.Series(clf.predict_proba(X_23am)[0])})
+
+
+# plt.close()
+pred_probs2 = pred_probs.sort_values("Probabilities",ascending = False).round(3)
+
+#plt.close()
+ax = sns.barplot(data = pred_probs2,
+x = "Probabilities", y = "Populations", hue = "Populations");
+
+ax.set(xlabel='Ancestry prediction score', ylabel='Continent')
+ax.set(title='Continental ancestry based on genomic sequencing')
+```
+
+The technology that makes modern genomic ancestry assessment possible is a combination from multiple fields, including advanced DNA sequencing, genome science, and machine learning.  While you can't sequence your own genome (yet), it takes only a moderate amount of computer programming skills and some open-access data to see how companies like 23andMe and Ancestry.com do their magic. 
+
+In this article I will Python to
+
+1. 🧬 Briefly explains what **raw genomic testing data** looks like
+1. 🌍 Introduce the types of **population-scale genome data** needed to understand human ancestry
+1. 🤖 Give an overview of **machine learning models** used in genomics
+1. 📊 Show how a person's ancestry can be predicted using a machine-learning model
+
+Additional articles will present more in depth how these data are processed and results created.
+
+## 🧬 Consumer genomics data
+
+Direct-to-consumer genomic testing services typically provide a thorough set of results, as well as access to your own raw data.  While the reports provided by companies can be [very flashy](https://customercare.23andme.com/hc/en-us/articles/5328923468183-Understanding-The-Difference-Between-Your-Ancestry-Percentages-Your-Country-Matches-and-Your-Genetic-Groups), the raw data for a single person is rather under-whelming, as we can see when its loaded into Python:
+
+```{python}
+#| echo: false
+
+df23am = pd.read_csv("sample_23andme.txt", 
+                        low_memory=False, 
+                        sep='\t', 
+                        skiprows = 14)    # skip 14 rows of meta data
+df23am.iloc[:3,]
+```
+
+This small snapshot of data is froom 23andMe, but is similar to genomic data from other services as well as that produced by researchers.  Each row of these data represent a position in the human genomes where people frequently vary from each other, with the **genotype** indicating what the sequence is for the person's DNA being examined.  Two letters are shown, one for each of the person's parents.  "CC" in the top row means that for this place in the genome, the person recieved a "C" DNA base from both parents.  In contrast, the "AGs" on the third row indicates that they inherited an "A" DNA base from one parent and a "G" from the other.  For any given row there are 3 possible combinations of letters that can occur in differnet people. For example, for the AG row, somewhere in the world there are poeple who are AA and others who are GG.
+
+```{python}
+#temp = pd.concat([genos4.iloc[:,0],continents], axis = 1)
+
+#temp.rs6680471[temp.rs6680471 == temp.rs6680471.min()] = 0
+#temp.rs6680471[temp.rs6680471 == temp.rs6680471.max()] = 2
+#temp.rs6680471[temp.rs6680471.round(2) == 0.64] = 1
+
+#temp.value_counts()
+#pd.pivot_table(temp, 
+#               index = "Continental Group", 
+#               values = "rs6680471",
+#               columns = "rs6680471",
+#               aggfunc = "sum")
+```
+
+To carry out genomic analyses, these data have to be converted to numbers.  For our analysis, we'll use a simple number system where each of the three combinations that can occur on a row are coded 0, 1 or 2.  In the case of the AG rows, "AG" would be coded as an intermediate value of 1, while AA and GG would be coded as 0 and 2.  This results in our snapshot of data looking like this:
+
+
+```{python}
+#| echo: false
+# Show preview of data
+temp = df23am.head().copy()
+temp.genotype = [2,0,1,1,1,]
+temp.iloc[:3,:]
+```
+
+It is important to point out that genomic data is truly "big data".  For example, data from 23andMe for one person contains over 900,000 rows!  This may seem huge, but its actually less than 0.05% of the size of the human genome.
+
+## 🌍 Population genomics data
+
+In order to characterize someone's ancestry we must have a database of many people from around the world to compare them too.  While consumer genomics companies have compiled their extensive but proprietery databases, there are also open-access datasets available for anyone to use.  The largest public database is the [1000 Genomes Project (1KGP)](https://en.wikipedia.org/wiki/1000_Genomes_Project), which contains genomic information on ~2500 people from 25 populations around the world.  1KGP data has been used in hundreds of scientific papers and can be accessed freely by anyone.  
+
+Unfortunately, 1KGP data is a bit unwieldly to access without specialized software; luckily, subsets of the data have been posted by some researchers.  In this artile, I'll use [data](https://jorde.genetics.utah.edu/published-data/) provided by researchers from the University of Utah.  This study, led by [Jinchuan Xing](https://xinglab.genetics.rutgers.edu/people/jinchuan-xing/) and [Lynn Jorde](https://jorde.genetics.utah.edu/), integrated data from the 1000 Genomes Project with data from Jorde's lab, resulting in a database of genomic data with 850 people from 40 different populations.  For each person in the dataset, they had genomic data similar to that shown above from 23andMe.
+
+After being prepared for analysis, the data from 5 people for 5 places in their genomes would look like the table below.  Each person is in a column, and each row contains a number representing their original DNA sequence.  In total, Xing and Jorde's study.  If two people have many of the same values accross the rows, then they are possiblly from the same or similar populations.
+
+```{python}
+#| echo: false
+temp = genos4.iloc[:5,:5].T.head()
+
+temp = temp.rename(columns={"OM111": "person01",
+                     "OM117": "person02",
+                     "OM128": "person03",
+                     "OM133": "person04",
+                     "OM134": "person05"})
+
+temp.round(1)
+```
+
+```{python}
+#| echo: false
+# TO DO: Add map of Xing et al data
+```
+
+## 🤖 Machine learning and genomics
+
+Most machine learning models have applications in population genomics, including dimension reduction, clustering, and supervised classification. While the methods used by consumer genomics companies and researchers are complex and tailored to the complexities of genomic data, we can use "off-the-shelf" tools from data science and machine learning to understand how more advanced models reach their conclusions.
+
+Regardless of methods, we face two challenges when analyzing genomic data.  First, there's typically lots of data, with information on hundreds of peole from thousands of places in the genome.  Second, each place in the genome serves as a feature (aka variable) of our analysis.  In the previous table there were 5 rows and therefore 5 locations in the genome represented. The full dataset has over 10,000 rows.  
+
+### Going the distance with DNA
+
+How do you analyze data with 10,000 features, let alone make a plot representing the data? Analysis of such high-dimensinal data typically requires methods to represent the data in a simpler format, a process known as dimension reduction.  One of the easiest method of dimension reduction is to calculate distance between each datapoint.  In geometry class we learn to use the Pythagorean Formula to calculate the distance between two points on a sheet of paper.  If we had a cruel teacher, we may have had to extend the formula to three dimensions.  It turns out that -- while we can't necessarily visualize how it works -- this formula can be extended beyond three dimensions to four, five, or even 10,000. We can similarly extend what we know about the average of a set of numbers and consider the multidimensional mean of a set of data.  
+
+The table below uses this logic to represent the average genetic distance between indvidiauls in major continental groups in Xing and Jorde's dataset.  First, the average genetic location of people from each continent is determined, and then the distnance between these mean locations calculate.  
+
+The largest value in the table is 107 in the Africa-Indigenous Americans rows and columns.  The populations of these continents are geographically most distant, and genetically they are, relatively speaking, least similar or "most distant."  (It is very important add the caveat "relatively" because two humans are typically 98% the same in terms of DNA, and these numers focus only on the infrequent genetic differenes).  
+
+The smallest value on the table is 52, between Europe and Asia.  These two continents are geographically contiguous with each other and their populations have remained the most genetically similar (least distant) depsite lignuistic and cultural change.
+
+
+
+```{python}
+#| echo: false
+from sklearn.metrics.pairwise import euclidean_distances
+from sklearn.metrics.pairwise import paired_distances
+
+import math
+
+genos_by_continent = pd.concat([continents, genos4], axis = 1)
+genos_by_continent.set_index('Continental Group')
+variant_means_by_continent = genos_by_continent.pivot_table(index = 'Continental Group',aggfunc = "mean")
+```
+
+```{python}
+#| echo: false
+continents_names = pd.Series(variant_means_by_continent.index)
+continents_names[1] = "Indigenous Americans"
+
+dist = np.round(euclidean_distances(variant_means_by_continent),1)
+dist = pd.DataFrame(dist,columns=continents_names,
+index = continents_names)
+dist.columns.name = None
+dist.head().round(0)
+
+
+
+```
+
+
+Once we have characterized the similarities and differences between populations, we can take an individual person's DNA sample and compare it to the average locations of each continent.  I did this for the DNA sample I introduced at the beginning of this article, and the smallest value is for Europe.  This indicats that they are least distant and therefore most similar to the other people in the dataset from this continent.
+
+
+
+
+```{python}
+#| echo: false
+distances_out = []
+for i in range(0,4):
+   temp = pd.concat([variant_means_by_continent.iloc[i,:],
+                        X_23am.T], axis = 1)
+   dist_i = round(math.dist(temp.iloc[:,0],temp.iloc[:,1]),1)
+   distances_out.append(dist_i)
+distances_out = pd.Series(distances_out, name = "Distance",index = continents_names)
+pd.DataFrame(distances_out).head().round()
+```
+
+
+### A picture is worth 10,000 genome locations
+
+Because it has so many features, genomic data cannot be plotted using standard tools like scatterplots.  Once we have a table of genetic distances, though, we can make a plot using the results of a process called NMDS (Non-metric Multi-Dimensonal Scaling).  
+
+NMDS turns a distance matrix into a set of x-y coordinates that preserves the relative distances between all sets of points.  In the plots
+
+```{python}
+#| echo: false
+import numpy as np
+from matplotlib import pyplot as plt
+from matplotlib.collections import LineCollection
+from sklearn import manifold
+
+#mean_locs_with_ind = pd.concat([variant_means_by_continent,X_23am])
+#dis_with_ind = euclidean_distances(mean_locs_with_ind)
+
+seed = 12345
+nmds = manifold.MDS(
+    n_components=2,
+    metric=False,
+    max_iter=10000,
+    eps=1e-12,
+    dissimilarity="precomputed",
+    random_state=seed
+)
+npos = nmds.fit_transform(dist)
+
+plt.close()
+temp = pd.DataFrame(npos, columns=["X","Y"], index = dist.index)
+ax = sns.scatterplot(data = temp, 
+                  y = "Y", x = "X", s = 100,
+                  hue = temp.index, style = temp.index)
+ax.set(xlabel="", ylabel="")
+ax.set(title = "Relative genetic distances between populations from major continents")
+```
+
+There are many machine learning techniques that can be used to visualize high-dimensional genomics data.  One of the most common tools used traditionally in population genomics is **Principal Components Analysis** (PCA).  PCA is an unsupervised machine learning method which allows high-dimensonal data to be visualized in 2 or 3 dimensions.  PCA scatterplots with 2 dimensions are called **biplots**, while those with 3 dimensions are triplots.
+
+In the case of genomic data, information on individual DNA samples enters into the PCA and the lower dimensional data is then plotted.  Dat points represent individuals people in the sample, and the points are color-coded based on the geographic location where the individuals are from.  This allows PCA to serve as both a visualization and clustering approach.
+
+
+
+Additionally, someone whose ancestry is not known or uncertain can have their data transformed by the PCA and plotted along with the other points.  The location of the prediction relative to other data points indicates genetic similarity and potentially similar ancestry.
+
+The figure below shows data from  Xing and Jorde study discussed above after it has been processed through PCA.  The data are color-coded by the large-scale geographic areas the samples are derived from.  I then took a [23andMe record](https://github.com/mvolz/osgen/tree/master/sample%20genomes) for a person with unknown ancestry and used my PCA model to estimate which samples from Xing this person is most similar to.  Based on their location, they are most likely predominantly European ancestry.
+
+```{python}
+#| echo: false
 
 ## build model
 ### fit PCA
 pca = decomposition.PCA(n_components=10)
-pca.fit(X_pca)
+pca.fit(genos4)
 
 ### transform original data into PCA space
-X_pca_transform = pca.transform(X_pca)
+X_pca_transform = pca.transform(genos4)
 
 ### transform unknown data into PCA space
 X_23am_PCA_transform = pca.transform(X_23am)
@@ -167,3 +343,40 @@ plt.annotate("East\nAsians",
 ```
 
 
+##  📊 Ancestry predictions  
+
+PCA biplots are ubiquitous in scientific papers on population genomics and ancestry, often as a central figure.  Consumer genetic companies, however, typically focus their results on assignment to one or more ancestry categories.  We can carry out a similar assignment, known technically a multi-class classification, using standard tools in Python.  In this Analysis, used a Random-forests classifier to gauge the relative probability that the person' whose DNA sequence we've been working with fit into 1 of 7 possible geographic groups.  
+
+```{python}
+#| echo: false
+#| 
+
+# random forests classifier
+clf = RandomForestClassifier(max_depth=2, random_state=0)
+clf.fit(genos4, inds["Continental Group"])
+clf.predict(X_23am)
+
+#clf.classes_
+
+pred_probs = pd.DataFrame({"Populations":pd.Series(clf.classes_),
+"Probabilities":pd.Series(clf.predict_proba(X_23am)[0])})
+
+
+# plt.close()
+pred_probs2 = pred_probs.sort_values("Probabilities",ascending = False).round(3)
+
+
+ax = sns.barplot(data = pred_probs2,
+x = "Probabilities", y = "Populations", hue = "Populations");
+
+ax.set(xlabel = "Relative probability", ylabel = "Geographic loation")
+
+
+ax.set(title = "Categorical ancestry assignment")
+```
+
+
+
+## Delving deeper into ancestry and machine learning
+
+The data and analyzes presented in this article should give you a sense for how consumer genomics companies are able to transform a sample of spit or cheek cells into a prediction about someone's ancestry.  Companies like 23andMe and Ancestry.com now how millions of people in their databases, reference samples from dozens of populations, and machine-learning and deep-learning algorithms tailored to their specific goals. Similar predictions about a person's ancestry can be reached using standard machine learning tools.  This makes genomic data an excellent place for data scientists explore and test different methods.  

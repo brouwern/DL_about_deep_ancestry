@@ -1,0 +1,94 @@
+{
+  "cells": [
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "---\n",
+        "title: \"Predicting geographic origin\"\n",
+        "format: html\n",
+        "---"
+      ],
+      "id": "67b1eeed"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "#| echo: false\n",
+        "\n",
+        "\n",
+        "## Preliminaries\n",
+        "### libraries\n",
+        "import pandas as pd\n",
+        "from sklearn import decomposition\n",
+        "import seaborn as sns\n",
+        "import matplotlib.pyplot as plt\n",
+        "\n",
+        "\n",
+        "from sklearn.ensemble import RandomForestClassifier\n",
+        "from sklearn.datasets import make_classification\n",
+        "\n",
+        "### load and prepare data\n",
+        "#### load population data\n",
+        "inds    = pd.read_csv(\"JHS_Ind.csv\",index_col=\"UID\")  \n",
+        "\n",
+        "# NOTE: this file is large and so get in a different directory\n",
+        "genos4  = pd.read_csv(\"C:\\\\Users\\\\nlb24\\OneDrive - University of Pittsburgh\\\\Desktop\\\\portfolio\\\\_23am_Xing_012_coded_noNA_scaled.csv\")\n",
+        "genos4  = genos4.rename(columns = {'Unnamed: 0': \"UID\"})\n",
+        "genos4  = genos4.set_index(\"UID\")\n",
+        "genos4 = genos4.reindex(inds.index)\n",
+        "\n",
+        "#### load unknown individual data\n",
+        "df_23am_Xing_subset2 = pd.read_csv(\"23am_Xing_subset_with_scaled_feat.csv\")\n",
+        "df_23am_Xing_subset2 = df_23am_Xing_subset2.set_index(\"rsid\")\n",
+        "\n",
+        "### setup individual data\n",
+        "X_23am = pd.DataFrame(df_23am_Xing_subset2.scaled_value)\n",
+        "X_23am = X_23am.T[X_pca.columns]"
+      ],
+      "id": "7b8b0ea9",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "#| echo: false\n",
+        "#| \n",
+        "\n",
+        "# random forests classifier\n",
+        "clf = RandomForestClassifier(max_depth=2, random_state=0)\n",
+        "clf.fit(genos4, inds[\"Continental Group\"])\n",
+        "clf.predict(X_23am)\n",
+        "\n",
+        "#clf.classes_\n",
+        "\n",
+        "pred_probs = pd.DataFrame({\"Populations\":pd.Series(clf.classes_),\n",
+        "\"Probabilities\":pd.Series(clf.predict_proba(X_23am)[0])})\n",
+        "\n",
+        "\n",
+        "# plt.close()\n",
+        "pred_probs2 = pred_probs.sort_values(\"Probabilities\",ascending = False).round(3)\n",
+        "\n",
+        "#plt.close()\n",
+        "sns.barplot(data = pred_probs2,\n",
+        "x = \"Probabilities\", y = \"Populations\");"
+      ],
+      "id": "7c8f6d8c",
+      "execution_count": null,
+      "outputs": []
+    }
+  ],
+  "metadata": {
+    "kernelspec": {
+      "name": "python3",
+      "language": "python",
+      "display_name": "Python 3 (ipykernel)",
+      "path": "C:\\ProgramData\\jupyter\\kernels\\python3"
+    }
+  },
+  "nbformat": 4,
+  "nbformat_minor": 5
+}
